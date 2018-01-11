@@ -21,6 +21,7 @@
     <filter-name>DruidWebStatFilter</filter-name>
     <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
     <init-param>
+      <!-- 放行静态资源 -->
       <param-name>exclusions</param-name>
       <param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>
     </init-param>
@@ -44,7 +45,7 @@
   <!-- logback ConfigLocation：logback 配置文件存放路径 -->
   <context-param>
     <param-name>logbackConfigLocation</param-name>
-    <param-value>classpath:logback-spring.xml</param-value>
+    <param-value>classpath:logback.xml</param-value>
   </context-param>
 
   <!-- 加载Spring容器配置 -->
@@ -55,7 +56,7 @@
   <!-- 设置Spring容器加载所有的配置文件的路径 -->
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:static/applicationContext.xml</param-value>
+    <param-value>classpath:applicationContext.xml</param-value>
   </context-param>
 
   <!-- 配置SpringMVC核心控制器 -->
@@ -104,33 +105,34 @@
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>
-  <listener>  <!-- 监听session  -->
-    <listener-class>com.dacheng.util.MySessionListener</listener-class>
-  </listener>
+  <!-- 监听session  -->
+  <!--<listener>  -->
+    <!--<listener-class>com.dacheng.util.MySessionListener</listener-class>-->
+  <!--</listener>-->
 
   <!-- 德鲁伊监控平台监控器 -->
-  <servlet>
-    <servlet-name>DruidStatView</servlet-name>
-    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
-    <init-param>
-      <!-- 允许清空统计数据 -->
-      <param-name>resetEnable</param-name>
-      <param-value>true</param-value>
-    </init-param>
-    <init-param>
-      <!-- 用户名 -->
-      <param-name>loginUsername</param-name>
-      <param-value>admin</param-value>
-    </init-param>
-    <init-param>
-      <!-- 密码 -->
-      <param-name>loginPassword</param-name>
-      <param-value>123456</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DruidStatView</servlet-name>
-    <url-pattern>/druid/*</url-pattern>
-  </servlet-mapping>
+  <!--<servlet>-->
+    <!--<servlet-name>DruidStatView</servlet-name>-->
+    <!--<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>-->
+    <!--<init-param>-->
+      <!--&lt;!&ndash; 允许清空统计数据 &ndash;&gt;-->
+      <!--<param-name>resetEnable</param-name>-->
+      <!--<param-value>true</param-value>-->
+    <!--</init-param>-->
+    <!--<init-param>-->
+      <!--&lt;!&ndash; 用户名 &ndash;&gt;-->
+      <!--<param-name>loginUsername</param-name>-->
+      <!--<param-value>admin</param-value>-->
+    <!--</init-param>-->
+    <!--<init-param>-->
+      <!--&lt;!&ndash; 密码 &ndash;&gt;-->
+      <!--<param-name>loginPassword</param-name>-->
+      <!--<param-value>123456</param-value>-->
+    <!--</init-param>-->
+  <!--</servlet>-->
+  <!--<servlet-mapping>-->
+    <!--<servlet-name>DruidStatView</servlet-name>-->
+    <!--<url-pattern>/druid/*</url-pattern>-->
+  <!--</servlet-mapping>-->
 
 </web-app>
