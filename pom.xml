@@ -1,0 +1,240 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.henghao</groupId>
+  <artifactId>statisticsInfo</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>statisticsInfo</name>
+  <url>http://maven.apache.org</url>
+
+
+  <!-- 设置框架的版本号 -->
+  <properties>
+    <!-- 字符编码 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!--指定jdk1.8 Start-->
+    <!--<maven.compiler.source>1.8</maven.compiler.source>-->
+    <!--<maven.compiler.target>1.8</maven.compiler.target>-->
+    <!--指定jdk1.8 End-->
+
+    <!--spring-->
+    <spring.version>4.3.3.RELEASE</spring.version>
+    <!--mybatis-->
+    <mybatis.version>3.2.5</mybatis.version>
+    <!--数据库 mysql-->
+    <mysql.version>5.1.38</mysql.version>
+    <!--日志 这里使用的是： logback -->
+    <log.version>1.1.11</log.version>
+    <log4j.version>1.2.17</log4j.version>
+    <slf4j.version>1.7.25</slf4j.version>
+    <!--连接池 这里使用的是： druid -->
+    <pool.version>1.0.11</pool.version>
+
+    <!--插件版本号 Start-->
+    <!--lombok-->
+    <lombok.version>1.16.10</lombok.version>
+    <!--插件版本号 End-->
+  </properties>
+
+  <!-- 依赖-->
+  <dependencies>
+    <!--junit Start-->
+    <!--3.0的junit是使用编程的方式来进行测试，而junit4是使用注解的方式来运行junit-->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <!--junit End-->
+
+    <!-- ServletAPI Start -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- ServletAPI End -->
+
+    <!-- MySQL依赖 Start -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql.version}</version>
+    </dependency>
+    <!-- MySQL依赖 End -->
+
+    <!-- 加入MyBatis 依赖 Start -->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>${mybatis.version}</version>
+    </dependency>
+    <!-- 加入MyBatis 依赖 End -->
+
+    <!-- MyBatis 整合 Spring -->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+
+    <!-- 引入Spring(包含SpringMVC) 依赖 Start -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-oxm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <!-- 引入Spring 依赖 End -->
+
+    <!-- Log Start -->
+    <!-- logback + slf4j -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${log.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${log.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.logback-extensions</groupId>
+      <artifactId>logback-ext-spring</artifactId>
+      <version>0.1.4</version>
+    </dependency>
+    <!-- Log End -->
+
+    <!-- Gson Start -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+    <!-- Gson End -->
+
+    <!--数据库连接池 Start-->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>${pool.version}</version>
+    </dependency>
+    <!--数据库连接池 End-->
+
+    <!-- 插件 Start-->
+    <!-- 插件1 lombok：自动生成set get toString 等-->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.16.10</version>
+    </dependency>
+
+    <!-- lombook End-->
+
+    <!-- 插件 End-->
+
+    <!-- 第三方jar包 Start -->
+    <dependency>
+      <!--
+      引入第三方jar，以horizon-action-7.2.2.jar为例：
+      1. 在本地仓库目录下：建立 horizon（groupId的值）文件夹
+      2. 在 horizon 文件夹下建立horizon-action（artifactId的值）文件夹
+      3. 在horizon-action文件夹下建立7.2.2文件夹（version的值）
+      4. 将horizon-action-7.2.2.jar放入7.2.2文件夹下。
+      5. 在7.2.2文件夹下新建 horizon-action-7.2.2.pom 文件
+      6. 在 horizon-action-7.2.2.pom 文件中写入如下内容：
+      <project>
+        <modelVersion>7.2.2</modelVersion>
+        <groupId>horizon</groupId>
+        <artifactId>horizon-action</artifactId>
+        <version>7.2.2</version>
+      </project>
+      7. pom.xml 文件引入
+
+  方式二：
+      <dependency>
+          <groupId>horizon</groupId>
+          <artifactId>horizon-action</artifactId>
+          <version>7.2.2</version>
+          <type>war</type>
+           <!-注意scope是system->
+          <scope>system</scope>
+            <systemPath>F:/JAVA/maven/repo/horizon/horizon-action/7.2.2/horizon-action-7.2.2.jar</systemPath>
+           <!-systemPath 可以写  1 本地路径 也可以写 2 项目根路径,项目根路径不是相对classpath 。->
+      </dependency>
+  -->
+      <groupId>horizon</groupId>
+      <artifactId>horizon-action</artifactId>
+      <version>7.2.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>1.8.10</version>
+    </dependency>
+
+    <!-- 第三方jar包 End -->
+
+  </dependencies>
+
+
+  <build>
+    <finalName>statisticsInfo</finalName>
+  </build>
+</project>
