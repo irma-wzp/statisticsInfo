@@ -1,29 +1,28 @@
 package com.henghao.service.impl;
 
 import com.henghao.domain.dao.IUserDao;
-import com.henghao.domain.entity.result.Result;
 import com.henghao.domain.entity.User;
 import com.henghao.domain.entity.UserLongitude;
+import com.henghao.domain.entity.result.Result;
 import com.henghao.domain.entity.result.Status;
 import com.henghao.domain.entity.result.StatusEnum;
 import com.henghao.domain.example.UserExample;
 import com.henghao.service.IUserService;
 import com.henghao.util.DateUtils;
 import com.henghao.vo.LoginVo;
-import com.henghao.vo.user.UsrLongAndLatVo;
 import com.henghao.vo.user.UserPassword;
 import com.henghao.vo.user.UserUpdateVo;
 import com.henghao.vo.user.UserVo;
+import com.henghao.vo.user.UsrLongAndLatVo;
 import com.horizon.util.encrypt.DESEDE;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -488,6 +487,7 @@ public class UserServiceImpl implements IUserService {
      */
     public Status updatePassword(UserPassword up) {
 
+        int i = 1/0;
         /*
         // 非空验证
         if (ObjectUtil.propertyIsNull(up))
@@ -500,8 +500,6 @@ public class UserServiceImpl implements IUserService {
         example.or().andIdEqualTo("HZ8bb0c95ce22e77015ce712f4f13842");
         List<User> users = userDao.selectByExample(example);
         System.out.println(users);
-
-
         return new Status(StatusEnum.SUCCESS_UPDATE.getCODE(), StatusEnum.SUCCESS_UPDATE.getEXPLAIN());
     }
 }

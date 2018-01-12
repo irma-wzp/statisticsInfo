@@ -32,7 +32,8 @@ public class UserController {
 
     /**
      * APP端 - 用户修改密码
-     *
+     * 0851000000197167
+     * 165675
      * @param up 用户密码包装类
      * @return Result
      * @update: update on 2017/12/4

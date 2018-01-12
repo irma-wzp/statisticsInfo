@@ -11,7 +11,7 @@
 
   <!--欢迎页面 Start-->
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   <!--欢迎页面 End-->
 

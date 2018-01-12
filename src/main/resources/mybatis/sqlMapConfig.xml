@@ -7,8 +7,10 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
     <settings>
 		<!-- 懒加载 -->
 		<setting name="lazyLoadingEnabled" value="false" />
-		<!-- 日志交由log4j管理 -->
-		<setting name="logImpl" value="LOG4J" />
+		<!-- 日志交由 logback 管理 -->
+		<!--<setting name="logImpl" value="console" />-->
+		<!--<setting name="logPrefix" value="dao." />-->
+
     </settings>
 
 	<!-- 批量别名 -->

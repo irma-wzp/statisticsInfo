@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <!-- 引入spring的相关配置文件 -->
-    <import resource="classpath:spring/spring-mvc.xml" />
+    <!--<import resource="classpath:spring/spring-mvc.xml" />-->
     <import resource="classpath:spring/spring-orm.xml" />
 
     <!-- 引入mybatis -->

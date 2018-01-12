@@ -26,16 +26,16 @@ import java.util.Date;
 
 public class GlobalExceptionHandler implements HandlerExceptionResolver {
 
-    private static Logger logger = LogManager.getLogger(GlobalExceptionHandler.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(GlobalExceptionHandler.class.getName());
 
 
     public ModelAndView resolveException(HttpServletRequest httpServletRequest,
                                          HttpServletResponse httpServletResponse, Object o, Exception ex) {
 
-        // 将异常写入日志 - Start
+        /** 将异常写入日志 - Start **/
         // 判断日志输出级别
-        if (logger.isInfoEnabled()) {
-            logger.info("异常通知： " + "\t" + ex.getMessage());
+        if (LOGGER.isInfoEnabled()) {
+            LOGGER.info("异常通知： " + "\t" + ex.getMessage());
         }
         //详细错误信息
         StringBuilder errorMsg = new StringBuilder();
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
         }
         // 写入异常日志
         writeLog(errorMsg.toString(), ex);
-        // 将异常写入日志 - End
+        /**** 将异常写入日志 - End ****/
 
         // 解析出异常类型
         // 如果该 异常类型是系统 自定义的异常，直接取出异常信息，在错误页面展示
@@ -65,6 +65,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
                 httpServletResponse.setContentType("application/json;charset=UTF-8");
                 writer = httpServletResponse.getWriter();
                 String json = new Gson().toJson(new Result(1,StatusEnum.UNKNOWN_ERROR.getEXPLAIN(),""));
+                System.out.println("json={}"+json);
                 writer.write(json);
                 writer.flush();
                 writer.close();
@@ -87,7 +88,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
             // 如果不是ajax，跳转到 error.html
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("message", message);
-            modelAndView.setViewName("redirect:/error.html");
+            modelAndView.setViewName("redirect:/500.html");
             return modelAndView;
         }
 
@@ -95,6 +96,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
 
 
     /**
+     * 写入日志方法
      * @param detailErrMsg 详细错误信息
      * @Description 日志异常
      * @author wzp
