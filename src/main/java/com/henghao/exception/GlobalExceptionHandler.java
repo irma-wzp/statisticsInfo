@@ -1,8 +1,8 @@
 package com.henghao.exception;
 
 import com.google.gson.Gson;
-import com.henghao.domain.entity.result.Result;
-import com.henghao.domain.entity.result.StatusEnum;
+import com.henghao.common.result.Result;
+import com.henghao.common.result.StatusEnum;
 import com.henghao.util.DateUtil;
 import com.henghao.util.RequestUtil;
 import org.apache.log4j.LogManager;
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
             try {
                 httpServletResponse.setContentType("application/json;charset=UTF-8");
                 writer = httpServletResponse.getWriter();
-                String json = new Gson().toJson(new Result(1,StatusEnum.UNKNOWN_ERROR.getEXPLAIN(),""));
+                String json = new Gson().toJson(new Result(1,StatusEnum.ERROR_UNKNOWN.getEXPLAIN(),""));
                 System.out.println("json={}"+json);
                 writer.write(json);
                 writer.flush();

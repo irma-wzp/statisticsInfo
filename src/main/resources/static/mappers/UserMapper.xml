@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.henghao.domain.dao.IUserDao" >
+<mapper namespace="com.henghao.dao.IUserDao" >
 
   <!-- 逆向生成工具自带 Start-->
-  <resultMap id="BaseResultMap" type="com.henghao.domain.entity.User" >
+  <resultMap id="BaseResultMap" type="com.henghao.common.domain.entity.UserDO" >
     <id column="ID" property="id" jdbcType="VARCHAR" />
     <result column="NAME" property="name" jdbcType="VARCHAR" />
     <result column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
@@ -131,14 +131,14 @@
     ldapUnid, loginName, orderNo, otherPosition, registerTime, secId, telephoneHome, 
     userStyle, workDesc
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.henghao.domain.example.UserExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.henghao.common.domain.example.UserExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from to_horizon_user
+    from ${table_user}
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -149,21 +149,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
-    from to_horizon_user
+    from ${table_user}
     where ID = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from to_horizon_user
+    delete from ${table_user}
     where ID = #{id,jdbcType=VARCHAR}
   </delete>
-  <delete id="deleteByExample" parameterType="com.henghao.domain.example.UserExample" >
-    delete from to_horizon_user
+  <delete id="deleteByExample" parameterType="com.henghao.common.domain.example.UserExample" >
+    delete from ${table_user}
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.henghao.domain.entity.User" >
-    insert into to_horizon_user (ID, NAME, LOGIN_NAME, 
+  <insert id="insert" parameterType="com.henghao.common.domain.entity.UserDO" >
+    insert into ${table_user} (ID, NAME, LOGIN_NAME, 
       EMAIL, ACTIVE, ORDER_NO, 
       USER_STYLE, DELETE_TIME, REGISTER_TIME, 
       PASSWORD, FIRSTNAME, GIVENNAME, 
@@ -202,8 +202,8 @@
       #{registertime,jdbcType=VARCHAR}, #{secid,jdbcType=VARCHAR}, #{telephonehome,jdbcType=VARCHAR}, 
       #{userstyle,jdbcType=VARCHAR}, #{workdesc,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.henghao.domain.entity.User" >
-    insert into to_horizon_user
+  <insert id="insertSelective" parameterType="com.henghao.common.domain.entity.UserDO" >
+    insert into ${table_user}
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         ID,
@@ -563,14 +563,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.henghao.domain.example.UserExample" resultType="java.lang.Integer" >
-    select count(*) from to_horizon_user
+  <select id="countByExample" parameterType="com.henghao.common.domain.example.UserExample" resultType="java.lang.Integer" >
+    select count(*) from ${table_user}
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update to_horizon_user
+    update ${table_user}
     <set >
       <if test="record.id != null" >
         ID = #{record.id,jdbcType=VARCHAR},
@@ -755,7 +755,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update to_horizon_user
+    update ${table_user}
     set ID = #{record.id,jdbcType=VARCHAR},
       NAME = #{record.name,jdbcType=VARCHAR},
       LOGIN_NAME = #{record.loginName,jdbcType=VARCHAR},
@@ -819,8 +819,8 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.henghao.domain.entity.User" >
-    update to_horizon_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.henghao.common.domain.entity.UserDO" >
+    update ${table_user}
     <set >
       <if test="name != null" >
         NAME = #{name,jdbcType=VARCHAR},
@@ -999,8 +999,8 @@
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.henghao.domain.entity.User" >
-    update to_horizon_user
+  <update id="updateByPrimaryKey" parameterType="com.henghao.common.domain.entity.UserDO" >
+    update ${table_user}
     set NAME = #{name,jdbcType=VARCHAR},
       LOGIN_NAME = #{loginName,jdbcType=VARCHAR},
       EMAIL = #{email,jdbcType=VARCHAR},
@@ -1073,9 +1073,9 @@
   <!-- 通讯录用户信息展示 SQL片段 End -->
 
   <!-- 查询通讯录列表 Start -->
-  <select id="findAllUserToApp" resultType="com.henghao.vo.user.UserVo">
+  <select id="findAllUserToApp" resultType="com.henghao.common.vo.UserVo">
     SELECT u.ID,u.BIRTH_DATE,u.`NAME`,u.TELEPHONE,u.CELLPHONE,u.POSITION,u.SEX,u.ADDRESS,u.WORK_DESC,u.EMP_NUM,d.DEPT_NAME
-    FROM to_horizon_user u,to_horizon_dept d,tor_horizon_user_dept t
+    FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
     WHERE u.ID=t.USER_ID
     AND t.DEPT_ID=d.ID
     AND d.DEPT_CODE &lt;&gt; '100000'
@@ -1085,12 +1085,12 @@
   <!-- 查询通讯录列表 End -->
 
   <!-- APP端根据用户ID查询用户信息 Start-->
-  <select id="findByUidToApp" parameterType="String" resultType="com.henghao.vo.user.UserVo">
+  <select id="findByUidToApp" parameterType="String" resultType="com.henghao.common.vo.UserVo">
       <!-- 定义用户ID变量，防止SQL注入 -->
       <bind name="userId" value="#{uid}" />
 
     SELECT u.ID,u.BIRTH_DATE,u.`NAME`,u.TELEPHONE,u.CELLPHONE,u.POSITION,u.SEX,u.ADDRESS,u.WORK_DESC,u.EMP_NUM,d.DEPT_NAME
-    FROM to_horizon_user u,to_horizon_dept d,tor_horizon_user_dept t
+    FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
     WHERE u.ID=t.USER_ID
     AND t.DEPT_ID=d.ID
     AND d.DEPT_NAME &lt;&gt; '部门导航'
@@ -1099,35 +1099,40 @@
   <!-- APP端根据用户ID查询用户信息 End-->
 
     <!-- APP端的登录验证 Start -->
-    <select id="findUserToCheck" parameterType="com.henghao.vo.LoginVo" resultType="com.henghao.domain.entity.User">
-        SELECT * FROM to_horizon_user
+    <select id="findUserToCheck" parameterType="com.henghao.common.vo.LoginVo" resultType="com.henghao.common.domain.entity.UserDO">
+        SELECT * FROM ${table_user}
         WHERE LOGIN_NAME=#{username}
         AND PASSWORD=#{password}
     </select>
     <!-- APP端的登录验证 End -->
 
 
-  <update id="updateUserDept" parameterType="com.henghao.vo.user.UserUpdateVo" >
+  <update id="updateUserDept" parameterType="com.henghao.common.vo.UserUpdateVo" >
     <bind name="deptid" value="deptId" />
     <bind name="userid" value="id" />
     UPDATE tor_horizon_user_dept SET DEPT_ID = deptid WHERE USER_ID = userid
   </update>
 
   <!-- 查询用户历史经纬度集合 Start -->
-  <select id="selectUserTitudesDao" resultType="com.henghao.vo.user.UsrLongAndLatVo">
+  <select id="selectUserTitudesDao" resultType="com.henghao.common.vo.UsrLongAndLatVo">
     <!--
         t1:查询所有用户最新时间的经纬度及用户ID
         t2：查询所有用户的ID、姓名、部门
         两表关联可查出包装类LongAndLatVo
     -->
-    SELECT t1.uid,t1.longitude,t1.latitude,t1.ROA,t2.uname,t2.dept
+    SELECT st1.uid,t1.longitude,t1.latitude,t1.ROA,t2.uname,t2.dept
      FROM sa_user_logitude_and_latitude t1,(SELECT u.ID,u.`NAME` AS uname,d.DEPT_NAME AS dept
-                                            FROM to_horizon_user u,to_horizon_dept d,tor_horizon_user_dept t
+                                            FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
                                             WHERE u.ID=t.USER_ID AND t.DEPT_ID=d.ID) t2
      WHERE t1.uid=t2.ID
   </select>
   <!-- 查询用户历史经纬度集合 End -->
 
+  <!-- 用户修改密码 Start -->
+  <update id="updatePassword" parameterType="com.henghao.common.dto.UserPasswordDTO">
+    UPDATE ${table_user} SET PASSWORD=#{newPassword} WHERE `ID`=#{uid}
+  </update>
+  <!-- 用户修改密码 End -->
 
 
   <!-- 自己编写 End -->

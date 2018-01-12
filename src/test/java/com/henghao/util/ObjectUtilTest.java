@@ -1,6 +1,6 @@
 package com.henghao.util;
 
-import com.henghao.vo.user.UserUpdateVo;
+import com.henghao.common.vo.UserUpdateVo;
 import junit.framework.TestCase;
 
 public class ObjectUtilTest extends TestCase {

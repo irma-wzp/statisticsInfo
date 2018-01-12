@@ -136,11 +136,13 @@
 
 
     <!-- project default level -->
-    <logger name="com.henghao.domain.dao" level="DEBUG"/>
+    <logger name="com.henghao.dao" level="DEBUG"/>
+    <logger name="dao" level="DEBUG"/>
 
     <root level="info">
         <!-- 控制台输出 -->
         <appender-ref ref="console" />
+
         <!--文件输出-->
         <appender-ref ref="ERROR" />
         <appender-ref ref="INFO" />

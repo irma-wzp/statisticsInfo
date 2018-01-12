@@ -1,6 +1,6 @@
 package com.henghao.controller;
 
-import com.henghao.domain.entity.result.Result;
+import com.henghao.common.result.Result;
 import com.henghao.service.INoticeService;
 
 import javax.annotation.Resource;

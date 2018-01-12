@@ -1,7 +1,7 @@
 package com.henghao.controller;
 
-import com.henghao.domain.entity.CarItude;
-import com.henghao.domain.entity.result.Result;
+import com.henghao.common.domain.entity.CarItude;
+import com.henghao.common.result.Result;
 import com.henghao.service.ICarItudeTestService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

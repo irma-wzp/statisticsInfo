@@ -1,12 +1,12 @@
 package com.henghao.service;
 
-import com.henghao.domain.entity.result.Result;
-import com.henghao.domain.entity.User;
-import com.henghao.domain.entity.UserLongitude;
-import com.henghao.domain.entity.result.Status;
-import com.henghao.vo.LoginVo;
-import com.henghao.vo.user.UserPassword;
-import com.henghao.vo.user.UserUpdateVo;
+import com.henghao.common.domain.entity.UserDO;
+import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.dto.UserPasswordDTO;
+import com.henghao.common.result.Result;
+import com.henghao.common.result.Status;
+import com.henghao.common.vo.LoginVo;
+import com.henghao.common.vo.UserUpdateVo;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IUserService {
@@ -17,7 +17,7 @@ public interface IUserService {
      * @param up 用户密码包装类
      * @return Status
      */
-    Status updatePassword(UserPassword up);
+    Status updatePassword(UserPasswordDTO up);
 
     /**
      * PC端获取历史经纬度
@@ -66,11 +66,11 @@ public interface IUserService {
 
     /**
      * APP端 - 修改用户信息
-     * @param user 用户实体类
+     * @param userDO 用户实体类
      * @param updateVo 修改用户包装类
      * @return Result
      */
-    Result updatePersonal(User user, UserUpdateVo updateVo);
+    Result updatePersonal(UserDO userDO, UserUpdateVo updateVo);
 
     /**
      * 用户登录验证

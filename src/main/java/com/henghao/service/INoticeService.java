@@ -1,6 +1,6 @@
 package com.henghao.service;
 
-import com.henghao.domain.entity.result.Result;
+import com.henghao.common.result.Result;
 
 public interface INoticeService {
     Result findToPC();

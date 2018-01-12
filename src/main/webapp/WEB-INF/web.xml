@@ -30,12 +30,22 @@
     <filter-name>DruidWebStatFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
+  <!-- 这个StatViewServlet的用途包括：提供监控信息展示的html页面;提供监控信息的JSON API -->
+  <servlet>
+    <servlet-name>DruidStatView</servlet-name>
+    <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DruidStatView</servlet-name>
+    <url-pattern>/druid/*</url-pattern>
+  </servlet-mapping>
   <!-- 启用Web监控统计功能 End -->
 
   <!--this listener must be defined before the spring listener-->
-  <!--  <listener>
-       <listener-class>com.alibaba.dubbo.remoting.http.servlet.BootstrapListener</listener-class>
-   </listener> -->
+  <!--<listener>
+      <listener-class>com.alibaba.dubbo.remoting.http.servlet.BootstrapListener</listener-class>
+  </listener>  -->
 
   <!-- 定义 logback 监听器 ,打印log放在前面防止出错-->
   <listener>

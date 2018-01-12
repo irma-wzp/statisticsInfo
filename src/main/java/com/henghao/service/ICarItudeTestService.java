@@ -1,7 +1,7 @@
 package com.henghao.service;
 
-import com.henghao.domain.entity.CarItude;
-import com.henghao.domain.entity.result.Result;
+import com.henghao.common.domain.entity.CarItude;
+import com.henghao.common.result.Result;
 
 public abstract interface ICarItudeTestService
 {

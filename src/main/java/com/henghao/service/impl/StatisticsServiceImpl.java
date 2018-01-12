@@ -1,12 +1,12 @@
 package com.henghao.service.impl;
 
-import com.henghao.domain.dao.IStatisticsDao;
-import com.henghao.domain.entity.result.Result;
+import com.henghao.dao.IStatisticsDao;
+import com.henghao.common.result.Result;
 import com.henghao.service.IStatisticsService;
 import com.henghao.util.BaiduMapUtil;
 import com.henghao.util.DateUtils;
 import com.henghao.util.DistanceUtil;
-import com.henghao.vo.CarTargetVo;
+import com.henghao.common.vo.CarTargetVo;
 
 import java.util.HashMap;
 import java.util.List;

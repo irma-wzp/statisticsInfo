@@ -1,13 +1,13 @@
 package com.henghao.controller;
 
-import com.henghao.domain.entity.User;
-import com.henghao.domain.entity.UserLongitude;
-import com.henghao.domain.entity.result.Result;
-import com.henghao.domain.entity.result.Status;
+import com.henghao.common.domain.entity.UserDO;
+import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.dto.UserPasswordDTO;
+import com.henghao.common.result.Result;
+import com.henghao.common.result.Status;
+import com.henghao.common.vo.LoginVo;
+import com.henghao.common.vo.UserUpdateVo;
 import com.henghao.service.IUserService;
-import com.henghao.vo.LoginVo;
-import com.henghao.vo.user.UserPassword;
-import com.henghao.vo.user.UserUpdateVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,14 +34,14 @@ public class UserController {
      * APP端 - 用户修改密码
      * 0851000000197167
      * 165675
-     * @param up 用户密码包装类
+     * @param upDTO 用户密码包装类
      * @return Result
      * @update: update on 2017/12/4
      */
     @ResponseBody
     @RequestMapping(value = {"/APPpassword"}, produces = {"application/json;charset=utf-8"})
-    public Status APPpassword(UserPassword up) {
-        return userService.updatePassword(up);
+    public Status APPpassword(UserPasswordDTO upDTO) {
+        return userService.updatePassword(upDTO);
     }
 
     /**
@@ -120,14 +120,14 @@ public class UserController {
 
     /**
      * APP端 - 修改用户信息
-     * @param user 用户实体类
+     * @param userDO 用户实体类
      * @param updateVo 修改用户包装类
      * @return Result
      */
     @ResponseBody
     @RequestMapping(value = {"/updatePersonal"}, produces = {"application/json;charset=utf-8"})
-    public Result updatePersonal(User user, UserUpdateVo updateVo) {
-        return userService.updatePersonal(user, updateVo);
+    public Result updatePersonal(UserDO userDO, UserUpdateVo updateVo) {
+        return userService.updatePersonal(userDO, updateVo);
     }
 
     /**

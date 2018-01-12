@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.henghao.domain.dao.ICarItudeDao" >
+<mapper namespace="com.henghao.dao.ICarItudeDao" >
 
   <!-- 逆向生成工具自带 Start-->
-  <resultMap id="BaseResultMap" type="com.henghao.domain.entity.CarItude" >
+  <resultMap id="BaseResultMap" type="com.henghao.common.domain.entity.CarItude" >
     <id column="car_test_id" property="carTestId" jdbcType="INTEGER" />
     <result column="car_latitude" property="carLatitude" jdbcType="VARCHAR" />
     <result column="car_longitude" property="carLongitude" jdbcType="VARCHAR" />
@@ -71,7 +71,7 @@
   <sql id="Base_Column_List" >
     car_test_id, car_latitude, car_longitude, car_num, car_upTime
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.henghao.domain.example.CarItudeExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.henghao.common.domain.example.CarItudeExample" >
     select
     <if test="distinct" >
       distinct
@@ -96,19 +96,19 @@
     delete from sa_test_car
     where car_test_id = #{carTestId,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.henghao.domain.example.CarItudeExample" >
+  <delete id="deleteByExample" parameterType="com.henghao.common.domain.example.CarItudeExample" >
     delete from sa_test_car
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.henghao.domain.entity.CarItude" >
+  <insert id="insert" parameterType="com.henghao.common.domain.entity.CarItude" >
     insert into sa_test_car (car_test_id, car_latitude, car_longitude, 
       car_num, car_upTime)
     values (#{carTestId,jdbcType=INTEGER}, #{carLatitude,jdbcType=VARCHAR}, #{carLongitude,jdbcType=VARCHAR}, 
       #{carNum,jdbcType=VARCHAR}, #{carUptime,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.henghao.domain.entity.CarItude" >
+  <insert id="insertSelective" parameterType="com.henghao.common.domain.entity.CarItude" >
     insert into sa_test_car
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="carTestId != null" >
@@ -145,7 +145,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.henghao.domain.example.CarItudeExample" resultType="java.lang.Integer" >
+  <select id="countByExample" parameterType="com.henghao.common.domain.example.CarItudeExample" resultType="java.lang.Integer" >
     select count(*) from sa_test_car
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
@@ -185,7 +185,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.henghao.domain.entity.CarItude" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.henghao.common.domain.entity.CarItude" >
     update sa_test_car
     <set >
       <if test="carLatitude != null" >
@@ -203,7 +203,7 @@
     </set>
     where car_test_id = #{carTestId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.henghao.domain.entity.CarItude" >
+  <update id="updateByPrimaryKey" parameterType="com.henghao.common.domain.entity.CarItude" >
     update sa_test_car
     set car_latitude = #{carLatitude,jdbcType=VARCHAR},
       car_longitude = #{carLongitude,jdbcType=VARCHAR},

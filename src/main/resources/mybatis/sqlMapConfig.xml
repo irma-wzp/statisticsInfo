@@ -9,14 +9,14 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<setting name="lazyLoadingEnabled" value="false" />
 		<!-- 日志交由 logback 管理 -->
 		<!--<setting name="logImpl" value="console" />-->
-		<!--<setting name="logPrefix" value="dao." />-->
+		<setting name="logPrefix" value="dao." />
 
     </settings>
 
 	<!-- 批量别名 -->
 	<typeAliases>
 		<package name="com.henghao.entity"/>
-		<package name="com.henghao.vo"/>
+		<package name="com.henghao.common.vo"/>
 		<package name="mappers"/>
 	</typeAliases>
 

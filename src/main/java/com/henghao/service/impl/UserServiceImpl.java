@@ -1,19 +1,19 @@
 package com.henghao.service.impl;
 
-import com.henghao.domain.dao.IUserDao;
-import com.henghao.domain.entity.User;
-import com.henghao.domain.entity.UserLongitude;
-import com.henghao.domain.entity.result.Result;
-import com.henghao.domain.entity.result.Status;
-import com.henghao.domain.entity.result.StatusEnum;
-import com.henghao.domain.example.UserExample;
+import com.henghao.common.domain.entity.UserDO;
+import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.dto.UserPasswordDTO;
+import com.henghao.common.result.Result;
+import com.henghao.common.result.Status;
+import com.henghao.common.result.StatusEnum;
+import com.henghao.common.vo.LoginVo;
+import com.henghao.common.vo.UserUpdateVo;
+import com.henghao.common.vo.UserVo;
+import com.henghao.common.vo.UsrLongAndLatVo;
+import com.henghao.dao.IUserDao;
 import com.henghao.service.IUserService;
 import com.henghao.util.DateUtils;
-import com.henghao.vo.LoginVo;
-import com.henghao.vo.user.UserPassword;
-import com.henghao.vo.user.UserUpdateVo;
-import com.henghao.vo.user.UserVo;
-import com.henghao.vo.user.UsrLongAndLatVo;
+import com.henghao.util.ObjectUtil;
 import com.horizon.util.encrypt.DESEDE;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,25 +87,25 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * APP端 - 修改用户信息
-     * @param user 用户实体类
+     * @param userDO 用户实体类
      * @param updateVo 修改用户包装类
      * @return Result
      */
-    public Result updatePersonal(User user, UserUpdateVo updateVo) {
+    public Result updatePersonal(UserDO userDO, UserUpdateVo updateVo) {
         // 返回对象
         Result result;
         // 用户ID
-        String id = user.getId();
+        String id = userDO.getId();
         // 部门ID
         String deptId = updateVo.getDeptId();
 
         // 非空验证
-        if (id == null || "".equals(id) || user == null || deptId == null || "".equals(deptId)) {
+        if (id == null || "".equals(id) || userDO == null || deptId == null || "".equals(deptId)) {
             return new Result(1, "必要参数传入为空", null);
         }
 
         // 根据ID查询数据库
-        User personal = userDao.selectByPrimaryKey(id);
+        UserDO personal = userDao.selectByPrimaryKey(id);
         // 返回对象非空
         if (personal == null) {
             result = new Result(1, "查无此人", null);
@@ -113,7 +113,7 @@ public class UserServiceImpl implements IUserService {
         }
         try {
             // 修改用户信息
-            userDao.updateByPrimaryKey(user);
+            userDao.updateByPrimaryKey(userDO);
             // 修改：用户-部门中间表信息
             userDao.updateUserDept(updateVo);
             result = new Result(0, "个人资料修改成功", null);
@@ -131,12 +131,12 @@ public class UserServiceImpl implements IUserService {
         // 密码加密
         loginVo.setPassword(DESEDE.encryptIt(loginVo.getPassword()));
 
-        User user = userDao.findUserToCheck(loginVo);
-        if (user == null) {
+        UserDO userDO = userDao.findUserToCheck(loginVo);
+        if (userDO == null) {
             result = new Result(1, "用户名或密码错误", null);
             return result;
         }
-        result = new Result(0, "登录成功", user);
+        result = new Result(0, "登录成功", userDO);
         return result;
     }
 
@@ -376,12 +376,12 @@ public class UserServiceImpl implements IUserService {
             result = new Result(StatusEnum.SUCCESS_SELECT.getCODE(), StatusEnum.SUCCESS_SELECT.getEXPLAIN(), list);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new Result(StatusEnum.SERVER_ERROR.getCODE(), StatusEnum.SERVER_ERROR.getEXPLAIN(), null);
+            result = new Result(StatusEnum.ERROR_SERVER.getCODE(), StatusEnum.ERROR_SERVER.getEXPLAIN(), null);
         }
         return result;
     }
 
-    public Result updatePersonal(User user) {
+    public Result updatePersonal(UserDO userDO) {
         Result result = null;/*
         String uid = user.getID();
         if ((uid == null) || ("".equals(uid))) {
@@ -481,25 +481,46 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * APP端 - 用户修改密码
-     * @update: update on 2017/12/4
-     * @param up 用户密码包装类
+     * @update on 2017/12/4
+     * @param upDTO 用户密码包装类
      * @return Result
+     * http://localhost:8080/statisticsInfo/user/APPpassword?uid=HZ9080955acfcfff015acfea808e045d&originalPassword=123456&newPassword=456456&confirmPassword=456456
      */
-    public Status updatePassword(UserPassword up) {
+    public Status updatePassword(UserPasswordDTO upDTO) {
 
-        int i = 1/0;
-        /*
         // 非空验证
-        if (ObjectUtil.propertyIsNull(up))
-            // 参数为空
+        if (ObjectUtil.propertyIsNull(upDTO))
             return new Status(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN());
-        */
 
-        userDao.selectByPrimaryKey(up.getUid());
-        UserExample example = new UserExample();
-        example.or().andIdEqualTo("HZ8bb0c95ce22e77015ce712f4f13842");
-        List<User> users = userDao.selectByExample(example);
-        System.out.println(users);
+        String originalPassword = upDTO.getOriginalPassword();
+        String newPassword = upDTO.getNewPassword();
+        String uid = upDTO.getUid();
+
+        // 密码与重复密码是否正确
+        if (!newPassword.equals(upDTO.getConfirmPassword()))
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(), "新密码与确认密码不一致");
+
+        // 查询用户ID是否存在
+        UserDO userDO = userDao.selectByPrimaryKey(uid);
+        if (userDO == null)
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(), StatusEnum.ERROR_PRAM.getEXPLAIN());
+
+        // 加密
+        String oldPwd = DESEDE.encryptIt(originalPassword);
+        String newPwd = DESEDE.encryptIt(newPassword);
+
+
+        // 判断原密码是否正确
+        if (!oldPwd.equals(userDO.getPassword()))
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(), "原密码错误");
+
+        // 修改密码
+//        upDTO.setNewPassword(newPwd);
+        userDao.updatePassword(upDTO);
+
+        userDao.selectUserTitudesDao();
+//        System.out.println(1/0);
+
         return new Status(StatusEnum.SUCCESS_UPDATE.getCODE(), StatusEnum.SUCCESS_UPDATE.getEXPLAIN());
     }
 }
