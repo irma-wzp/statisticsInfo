@@ -32,6 +32,12 @@
         <!-- 获取连接最大等待时间 -->
         <property name="maxWait" value="${db.maxWait}" />
 
+        <!-- 打开removeAbandoned功能 -->
+        <property name="removeAbandoned" value="true" />
+        <!-- 1800秒，也就是30分钟 -->
+        <property name="removeAbandonedTimeout" value="1800" />
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="true" />
         <!-- 验证数据库连接的有效性 -->
         <!-- Oracle select 1 from dual
             db2 select 1 from sysibm.sysdummy1
@@ -63,16 +69,20 @@
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.henghao.dao"/>
-        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <!--<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />-->
     </bean>
 
+    <!-- 创建一个sqlSession实例，线程安全的，可以在所有DAO实例共享，原理是将sqlSession，事务与当前线程挂钩 -->
+    <bean name="sqlSessionTemplateASS" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+    </bean>
 
     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <!-- 切的方法 -->
+    <!-- 通知 -->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <!-- 以 select find get 开头的方法都为只读 -->
@@ -85,14 +95,19 @@
     </tx:advice>
 
     <!--配置aop-->
-    <aop:config expose-proxy="true">
-        <!--切点-->
+    <aop:config>
+        <!--把事务控制在Service层-->
         <aop:pointcut id="txPointcut" expression="execution(* com.henghao.service.*.*(..))" />
         <!-- 通知点 -->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
 
          <!--Advisor定义，切入点和通知分别为txPointcout、txAdvice-->
     </aop:config>
+
+    <!-- 启用注解扫描 -->
+    <context:component-scan base-package="com.henghao.*">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
 </beans>
 
