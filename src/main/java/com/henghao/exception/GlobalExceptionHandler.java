@@ -14,7 +14,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -28,7 +32,6 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
 
     private static final Logger LOGGER = LogManager.getLogger(GlobalExceptionHandler.class.getName());
 
-
     public ModelAndView resolveException(HttpServletRequest httpServletRequest,
                                          HttpServletResponse httpServletResponse, Object o, Exception ex) {
 
@@ -37,7 +40,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("异常通知： " + "\t" + ex.getMessage());
         }
-        //详细错误信息
+        // 详细错误信息
         StringBuilder errorMsg = new StringBuilder();
         StackTraceElement[] trace = ex.getStackTrace();
         for (StackTraceElement s : trace) {
@@ -65,7 +68,6 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
                 httpServletResponse.setContentType("application/json;charset=UTF-8");
                 writer = httpServletResponse.getWriter();
                 String json = new Gson().toJson(new Result(1,StatusEnum.ERROR_UNKNOWN.getEXPLAIN(),""));
-                System.out.println("json={}"+json);
                 writer.write(json);
                 writer.flush();
                 writer.close();
@@ -80,8 +82,6 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
                 for (StackTraceElement element : ioTrace) {
                     ioMSG.append("\t at ").append(element).append("\r\n");
                 }
-                // 写入异常日志
-                writeLog(ioMSG.toString(), e);
             }
             return null;
         }else{
@@ -117,8 +117,12 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
         try {
             // 创建输出异常log日志
             String separator = File.separator;
+//            String path = "F:" + separator + "usrlog";
+            //tomcat服务器路径
+            String tomcatPath = System.getProperty("catalina.home");
+            String path = tomcatPath + separator + "bin" + separator + "usrlog";
             // 每天生成一个日志
-            String filePath = "F:" + separator + "usrlog" + separator +
+            String filePath = path + separator +
                     DateUtil.getCurrentStringDate("yyyy-MM-dd") + separator
                     + "exception.log";
 
@@ -131,7 +135,6 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
             }
             FileWriter fw = new FileWriter(filePath, true);
             BufferedWriter bw = new BufferedWriter(fw);
-
             //日志具体参数
             StringBuffer sb = new StringBuffer();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -139,7 +142,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
             sb.append("远程请求URL: [" + requestURL + "]\r\n");
             sb.append("详细错误信息：" + ex + "\r\n");
             sb.append(detailErrMsg + "\r\n");
-            //注意需要转换对应的字符集
+            // 注意需要转换对应的字符集
             bw.append(new String(sb.toString().getBytes("utf-8")) + "\r\n");
             bw.close();
             fw.close();

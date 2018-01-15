@@ -294,10 +294,7 @@ public class UserServiceImpl implements IUserService {
      */
     public Result longAndLat(UserLongitude uli, Double attendance) {
         Result result = new Result();
-        UserVo userVo = new UserVo();
-        userVo.setADDRESS("address");
-        userVo.setBIRTH_DATE("birthday");
-        result.setData(userVo);
+
 /*
         String uid = uli.getUid();
 
@@ -486,7 +483,7 @@ public class UserServiceImpl implements IUserService {
      * @return Result
      * http://localhost:8080/statisticsInfo/user/APPpassword?uid=HZ9080955acfcfff015acfea808e045d&originalPassword=123456&newPassword=456456&confirmPassword=456456
      */
-    public Status updatePassword(UserPasswordDTO upDTO) {
+    public Status updatePassword(UserPasswordDTO upDTO)  throws Exception {
 
         // 非空验证
         if (ObjectUtil.propertyIsNull(upDTO))
@@ -508,19 +505,13 @@ public class UserServiceImpl implements IUserService {
         // 加密
         String oldPwd = DESEDE.encryptIt(originalPassword);
         String newPwd = DESEDE.encryptIt(newPassword);
-
-
         // 判断原密码是否正确
         if (!oldPwd.equals(userDO.getPassword()))
             return new Status(StatusEnum.ERROR_PRAM.getCODE(), "原密码错误");
 
         // 修改密码
-//        upDTO.setNewPassword(newPwd);
+        upDTO.setNewPassword(newPwd);
         userDao.updatePassword(upDTO);
-
-        userDao.selectUserTitudesDao();
-//        System.out.println(1/0);
-
         return new Status(StatusEnum.SUCCESS_UPDATE.getCODE(), StatusEnum.SUCCESS_UPDATE.getEXPLAIN());
     }
 }

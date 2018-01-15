@@ -73,9 +73,9 @@
     </bean>
 
     <!-- 创建一个sqlSession实例，线程安全的，可以在所有DAO实例共享，原理是将sqlSession，事务与当前线程挂钩 -->
-    <bean name="sqlSessionTemplateASS" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
-        <constructor-arg index="0" ref="sqlSessionFactory" />
-    </bean>
+    <!--<bean name="sqlSessionTemplateASS" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">-->
+        <!--<constructor-arg index="0" ref="sqlSessionFactory" />-->
+    <!--</bean>-->
 
     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -89,8 +89,7 @@
             <tx:method name="select*" read-only="true"/>
             <tx:method name="find*" read-only="true"/>
             <tx:method name="get*" read-only="true"/>
-            <tx:method name="update*" read-only="true" />
-            <tx:method name="*"/>
+            <tx:method name="*" rollback-for="java.lang.Exception,java.lang.RuntimeException" />
         </tx:attributes>
     </tx:advice>
 
@@ -103,11 +102,6 @@
 
          <!--Advisor定义，切入点和通知分别为txPointcout、txAdvice-->
     </aop:config>
-
-    <!-- 启用注解扫描 -->
-    <context:component-scan base-package="com.henghao.*">
-        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-    </context:component-scan>
 
 </beans>
 

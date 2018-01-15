@@ -36,18 +36,19 @@ public class UserController {
      * 165675
      * @param upDTO 用户密码包装类
      * @return Result
-     * @update: update on 2017/12/4
+     * @update on 2018/1/15 已解决
      */
     @ResponseBody
     @RequestMapping(value = {"/APPpassword"}, produces = {"application/json;charset=utf-8"})
-    public Status APPpassword(UserPasswordDTO upDTO) {
+    public Status APPpassword(UserPasswordDTO upDTO)  throws Exception {
         return userService.updatePassword(upDTO);
+
     }
 
     /**
      * 用户上传经纬度，出勤率
      *
-     * @param uli        {@link UserLongitude}
+     * @param uli {@link UserLongitude}
      * @param attendance 出勤率
      * @return {@link Result}
      * @update: update on 2017/12/4

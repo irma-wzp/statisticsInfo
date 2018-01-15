@@ -17,7 +17,7 @@ public interface IUserService {
      * @param up 用户密码包装类
      * @return Status
      */
-    Status updatePassword(UserPasswordDTO up);
+    Status updatePassword(UserPasswordDTO up) throws Exception;
 
     /**
      * PC端获取历史经纬度
