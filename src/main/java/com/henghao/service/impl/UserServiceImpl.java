@@ -1,7 +1,8 @@
 package com.henghao.service.impl;
 
 import com.henghao.common.domain.entity.UserDO;
-import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.domain.entity.UserItudeDO;
+import com.henghao.common.domain.entity.UserHistoryItudeDO;
 import com.henghao.common.dto.UserPasswordDTO;
 import com.henghao.common.result.Result;
 import com.henghao.common.result.Status;
@@ -12,22 +13,25 @@ import com.henghao.common.vo.UserVo;
 import com.henghao.common.vo.UsrLongAndLatVo;
 import com.henghao.dao.IUserDao;
 import com.henghao.service.IUserService;
-import com.henghao.util.DateUtils;
+import com.henghao.util.DateUtil;
 import com.henghao.util.ObjectUtil;
+import com.henghao.util.UUidUtil;
 import com.horizon.util.encrypt.DESEDE;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.text.DecimalFormat;
 
 
 /**
  * @author wzp
- * @description: APP端用户service接口实现类
+ * @description APP端用户service接口实现类
  * @update on 2017/12/3.
  */
 @Service("userService")
@@ -39,6 +43,98 @@ public class UserServiceImpl implements IUserService {
 
     // service层map
     Map<String, Object> map_service_messages = new HashMap();
+
+
+    /**
+     * APP端 - 用户修改密码
+     * @update on 2017/12/4
+     * @param upDTO 用户密码包装类
+     * @return Status
+     */
+    public Status updatePassword(UserPasswordDTO upDTO)  throws Exception {
+
+        // 非空验证
+        if (ObjectUtil.propertyIsNull(upDTO))
+            return new Status(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN());
+
+        String originalPassword = upDTO.getOriginalPassword();
+        String newPassword = upDTO.getNewPassword();
+        String uid = upDTO.getUid();
+
+        // 密码与重复密码是否正确
+        if (!newPassword.equals(upDTO.getConfirmPassword()))
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(), "新密码与确认密码不一致");
+
+        // 查询用户ID是否存在
+        UserDO userDO = userDao.selectByPrimaryKey(uid);
+        if (userDO == null)
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(), StatusEnum.ERROR_PRAM.getEXPLAIN());
+
+        // 加密
+        String oldPwd = DESEDE.encryptIt(originalPassword);
+        String newPwd = DESEDE.encryptIt(newPassword);
+        // 判断原密码是否正确
+        if (!oldPwd.equals(userDO.getPassword()))
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(), "原密码错误");
+
+        // 修改密码
+        upDTO.setNewPassword(newPwd);
+        userDao.updatePassword(upDTO);
+        return new Status(StatusEnum.SUCCESS_UPDATE.getCODE(), StatusEnum.SUCCESS_UPDATE.getEXPLAIN());
+    }
+
+    /**
+     * 用户上传经纬度，出勤率
+     * @update update on 2017/12/4
+     * @param itudeDO {@link UserItudeDO}
+     * @return {@link Result}
+     */
+    public Status addUserItude(UserItudeDO itudeDO) throws Exception{
+
+        String uid = itudeDO.getUid();
+        Double longitude = itudeDO.getLongitude();
+        Double latitude = itudeDO.getLatitude();
+        // 出勤率
+        Double attendance = itudeDO.getAttendance();
+
+        if ("".equals(uid) || uid == null ||
+                longitude == null || 0 == longitude ||
+                latitude == null || 0 == latitude ||
+                attendance == null) {
+
+            return new Status(StatusEnum.NO_PRAM.getCODE(),StatusEnum.NO_PRAM.getEXPLAIN());
+        }
+
+        if (attendance < 0.0D || attendance > 1.0D) {
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(),"出勤率只能在0到1之间");
+        }
+
+        UserDO userDO = userDao.selectByPrimaryKey(uid);
+        if (userDO == null) {
+            return new Status(StatusEnum.ERROR_PRAM.getCODE(),"用户ID错误");
+        }
+
+        // 出勤率 rate of attendance
+        String roa = new DecimalFormat("0.00%").format(attendance);
+        itudeDO.setRoa(roa);
+
+        String uuid = UUidUtil.getGSUUid32();
+        Date currentDate = DateUtil.getCurrentDate("yyyy-MM-dd HH:mm:ss");
+        // 保存到历史经纬度信息表中
+        UserHistoryItudeDO historyItude = new UserHistoryItudeDO(uuid,null,currentDate,latitude,longitude,userDO.getName(),userDO.getId());
+        userDao.saveUserHistoryItude(historyItude);
+
+        UserItudeDO userItudeDO = userDao.getItudeByUid(uid);
+        if (userItudeDO == null) {
+            String itudeId = UUidUtil.getGSUUid32();
+            itudeDO.setId(itudeId);
+            userDao.saveUserItudeDO(itudeDO);
+        }else{
+            itudeDO.setId(userItudeDO.getId());
+            userDao.updateUserItudeByPrimaryKey(itudeDO);
+        }
+        return new Status(StatusEnum.SUCCESS_UPLOAD.getCODE(),StatusEnum.SUCCESS_UPLOAD.getEXPLAIN());
+    }
 
     /**
      * APP端 - 获取通讯录列表，所有用户集合
@@ -285,81 +381,6 @@ public class UserServiceImpl implements IUserService {
         return result;
     }
 
-    /**
-     * 用户上传经纬度，出勤率
-     * @update: update on 2017/12/4
-     * @param uli {@link UserLongitude}
-     * @param attendance 出勤率
-     * @return {@link Result}
-     */
-    public Result longAndLat(UserLongitude uli, Double attendance) {
-        Result result = new Result();
-
-/*
-        String uid = uli.getUid();
-
-        String longitude = uli.getLongitude();
-
-        String latitude = uli.getLatitude();
-
-        double upl_longitude = 0.0D;
-
-        double upl_latitude = 0.0D;
-        if ((uid == null) || ("".equals(uid))) {
-            result = new Result(1, "用户ID为空", null);
-            return result;
-        }
-        if ((longitude == null) || (latitude == null) || ("".equals(longitude)) || ("".equals(latitude))) {
-            result = new Result(1, "用户上传经纬度为空", null);
-            return result;
-        }
-        try {
-            upl_longitude = Double.parseDouble(longitude);
-            upl_latitude = Double.parseDouble(latitude);
-        } catch (Exception e) {
-            return new Result(1, "用户上传经纬度为空", null);
-        }
-        if ((attendance == null) || (attendance.doubleValue() < 0.0D) || (attendance.doubleValue() > 1.0D)) {
-            result = new Result(1, "系统繁忙", null);
-            return result;
-        }
-        User user = userDao.findPersonal(uid);
-        if (user == null) {
-            result = new Result(1, "用户ID错误", null);
-            return result;
-        }
-        String ROA = new DecimalFormat("0.00%").format(attendance);
-
-        UserLongitude userLongitude = new UserLongitude(uid, longitude, latitude, ROA);
-
-        UserPositionLog upl = null;
-        String msg = "";
-        try {
-            upl = new UserPositionLog(DateUtils.getCurrentDateT("yyyy-MM-dd HH:mm:ss"), uid, user.getNAME(), upl_longitude, upl_latitude, null);
-            userDao.addUPL(upl);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-            msg = ",添加用户历史经纬度失败";
-        }
-        if (userDao.getItudeByUid(uid) == null) {
-            try {
-                userDao.addLongitude(userLongitude);
-                result = new Result(0, "用户经纬度添加成功" + msg, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-                result = new Result(1, "用户经纬度添加失败" + msg, null);
-            }
-            return result;
-        }
-        try {
-            userDao.updateItudeByUid(userLongitude);
-            result = new Result(0, "用户经纬度修改成功" + msg, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = new Result(1, "用户经纬度修改失败" + msg, null);
-        }*/
-        return result;
-    }
 
     /** PC端获取用户实时经纬度及相关信息
 	 * @see com.henghao.service.IUserService#getTitudeToPC()
@@ -442,7 +463,7 @@ public class UserServiceImpl implements IUserService {
             return result;
         }
         //进行重命名，解决不同文件重名情况
-        String file_ture_name = DateUtils.getCurrentDate("yyyyMMddHHmmssms.")+extensionName;
+        String file_ture_name = DateUtil.getCurrentDate("yyyyMMddHHmmssms.")+extensionName;
         try {
             //tomcat服务器路径
             String tomcatPath = System.getProperty("catalina.home");
@@ -476,42 +497,5 @@ public class UserServiceImpl implements IUserService {
     }
 
 
-    /**
-     * APP端 - 用户修改密码
-     * @update on 2017/12/4
-     * @param upDTO 用户密码包装类
-     * @return Result
-     * http://localhost:8080/statisticsInfo/user/APPpassword?uid=HZ9080955acfcfff015acfea808e045d&originalPassword=123456&newPassword=456456&confirmPassword=456456
-     */
-    public Status updatePassword(UserPasswordDTO upDTO)  throws Exception {
 
-        // 非空验证
-        if (ObjectUtil.propertyIsNull(upDTO))
-            return new Status(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN());
-
-        String originalPassword = upDTO.getOriginalPassword();
-        String newPassword = upDTO.getNewPassword();
-        String uid = upDTO.getUid();
-
-        // 密码与重复密码是否正确
-        if (!newPassword.equals(upDTO.getConfirmPassword()))
-            return new Status(StatusEnum.ERROR_PRAM.getCODE(), "新密码与确认密码不一致");
-
-        // 查询用户ID是否存在
-        UserDO userDO = userDao.selectByPrimaryKey(uid);
-        if (userDO == null)
-            return new Status(StatusEnum.ERROR_PRAM.getCODE(), StatusEnum.ERROR_PRAM.getEXPLAIN());
-
-        // 加密
-        String oldPwd = DESEDE.encryptIt(originalPassword);
-        String newPwd = DESEDE.encryptIt(newPassword);
-        // 判断原密码是否正确
-        if (!oldPwd.equals(userDO.getPassword()))
-            return new Status(StatusEnum.ERROR_PRAM.getCODE(), "原密码错误");
-
-        // 修改密码
-        upDTO.setNewPassword(newPwd);
-        userDao.updatePassword(upDTO);
-        return new Status(StatusEnum.SUCCESS_UPDATE.getCODE(), StatusEnum.SUCCESS_UPDATE.getEXPLAIN());
-    }
 }

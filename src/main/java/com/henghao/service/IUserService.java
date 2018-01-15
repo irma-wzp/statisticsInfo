@@ -1,7 +1,7 @@
 package com.henghao.service;
 
 import com.henghao.common.domain.entity.UserDO;
-import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.domain.entity.UserItudeDO;
 import com.henghao.common.dto.UserPasswordDTO;
 import com.henghao.common.result.Result;
 import com.henghao.common.result.Status;
@@ -20,20 +20,19 @@ public interface IUserService {
     Status updatePassword(UserPasswordDTO up) throws Exception;
 
     /**
+     * 用户上传经纬度，出勤率
+     * @update: update on 2017/12/4
+     * @param itudeDO {@link UserItudeDO}
+     * @return {@link Result}
+     */
+    Status addUserItude(UserItudeDO itudeDO) throws Exception;
+    
+    /**
      * PC端获取历史经纬度
      * @update: update on 2017/12/4
      * @return {@link Result}
      */
     Result getTitudeToPC();
-
-    /**
-     * 用户上传经纬度，出勤率
-     * @update: update on 2017/12/4
-     * @param uli {@link UserLongitude}
-     * @param attendance 出勤率
-     * @return {@link Result}
-     */
-    Result longAndLat(UserLongitude uli, Double attendance);
 
     /**
      * 查询用户代办事项数量

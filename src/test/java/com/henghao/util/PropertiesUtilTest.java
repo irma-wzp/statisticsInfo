@@ -7,8 +7,7 @@ public class PropertiesUtilTest {
     @Test
     public void getProperties() throws Exception {
 
-        String value = PropertiesUtil.getPropertiesValueByKey("db.logFileDir");
-        System.out.println(value);
+        double parseDouble = Double.parseDouble("s");
     }
 
 }

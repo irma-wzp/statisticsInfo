@@ -1,7 +1,7 @@
 package com.henghao.controller;
 
 import com.henghao.common.domain.entity.UserDO;
-import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.domain.entity.UserItudeDO;
 import com.henghao.common.dto.UserPasswordDTO;
 import com.henghao.common.result.Result;
 import com.henghao.common.result.Status;
@@ -48,15 +48,14 @@ public class UserController {
     /**
      * 用户上传经纬度，出勤率
      *
-     * @param uli {@link UserLongitude}
-     * @param attendance 出勤率
+     * @param itudeDO {@link UserItudeDO}
      * @return {@link Result}
      * @update: update on 2017/12/4
      */
     @ResponseBody
     @RequestMapping(value = {"/LongAndLat"}, produces = {"application/json;charset=utf-8"})
-    public Result LongAndLat(UserLongitude uli, Double attendance) {
-        return userService.longAndLat(uli, attendance);
+    public Status LongAndLat(UserItudeDO itudeDO) throws Exception {
+        return userService.addUserItude(itudeDO);
     }
 
     /**

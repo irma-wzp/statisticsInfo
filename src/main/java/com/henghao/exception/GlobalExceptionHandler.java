@@ -104,6 +104,8 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
      */
     private void writeLog(String detailErrMsg, Exception ex) {
 
+        ex.printStackTrace();
+
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.
                 getRequestAttributes()).getRequest();
         //获取请求的URL
