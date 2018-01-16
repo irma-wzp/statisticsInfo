@@ -1,6 +1,6 @@
 package com.henghao.dao;
 
-import com.henghao.common.domain.entity.UserLongitude;
+import com.henghao.common.domain.entity.UserItudeDO;
 import com.henghao.common.domain.example.UserLongitudeExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -12,19 +12,19 @@ public interface IUserLongitudeDao {
 
     int deleteByPrimaryKey(Integer id);
 
-    int insert(UserLongitude record);
+    int insert(UserItudeDO record);
 
-    int insertSelective(UserLongitude record);
+    int insertSelective(UserItudeDO record);
 
-    List<UserLongitude> selectByExample(UserLongitudeExample example);
+    List<UserItudeDO> selectByExample(UserLongitudeExample example);
 
-    UserLongitude selectByPrimaryKey(Integer id);
+    UserItudeDO selectByPrimaryKey(Integer id);
 
-    int updateByExampleSelective(@Param("record") UserLongitude record, @Param("example") UserLongitudeExample example);
+    int updateByExampleSelective(@Param("record") UserItudeDO record, @Param("example") UserLongitudeExample example);
 
-    int updateByExample(@Param("record") UserLongitude record, @Param("example") UserLongitudeExample example);
+    int updateByExample(@Param("record") UserItudeDO record, @Param("example") UserLongitudeExample example);
 
-    int updateByPrimaryKeySelective(UserLongitude record);
+    int updateByPrimaryKeySelective(UserItudeDO record);
 
-    int updateByPrimaryKey(UserLongitude record);
+    int updateByPrimaryKey(UserItudeDO record);
 }

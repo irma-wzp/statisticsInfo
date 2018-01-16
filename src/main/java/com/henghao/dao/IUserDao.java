@@ -1,6 +1,8 @@
 package com.henghao.dao;
 
 import com.henghao.common.domain.entity.UserDO;
+import com.henghao.common.domain.entity.UserHistoryItudeDO;
+import com.henghao.common.domain.entity.UserItudeDO;
 import com.henghao.common.domain.example.UserExample;
 import com.henghao.common.dto.UserPasswordDTO;
 import com.henghao.common.result.Result;
@@ -51,6 +53,40 @@ public interface IUserDao {
      */
 
     /**
+     * 用户修改密码
+     * @param upDTO {@link UserPasswordDTO}
+     */
+    void updatePassword(UserPasswordDTO upDTO) throws Exception;
+
+    /**
+     * 保存用户历史经纬度
+     * @param historyItude {@link UserHistoryItudeDO}
+     * @throws Exception
+     */
+    void saveUserHistoryItude(UserHistoryItudeDO historyItude) throws Exception;
+
+    /**
+     * 保存用户实时经纬度
+     * @param itudeDO {@link UserItudeDO}
+     * @throws Exception
+     */
+    void saveUserItudeDO(UserItudeDO itudeDO) throws Exception;
+
+    /**
+     * 更新用户实时经纬度
+     * @param itudeDO {@link UserItudeDO}
+     * @throws Exception
+     */
+    void updateUserItudeByPrimaryKey(UserItudeDO itudeDO) throws Exception;
+
+    /**
+     * 根据用户ID，获取用户实时经纬度
+     * @param uid
+     * @return
+     */
+    UserItudeDO getItudeByUid(String uid);
+
+    /**
      * 查询通讯录列表
      * @return
      * @throws Exception
@@ -92,11 +128,9 @@ public interface IUserDao {
      */
     List<UsrLongAndLatVo> selectUserTitudesDao();
 
-    /**
-     * 用户修改密码
-     * @param upDTO
-     */
-    void updatePassword(UserPasswordDTO upDTO);
+
+
+
 
     /*
      * 自定义 End

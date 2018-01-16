@@ -9,21 +9,24 @@ import lombok.Data;
  * 用户经纬度实体类
  * @create on 2017/12/3.
  */
-public class UserLongitude {
-    private Integer id;
+public class UserItudeDO {
+    private String id;
     // 纬度
-    private String latitude;
+    private Double latitude;
     // 经度
-    private String longitude;
+    private Double longitude;
     // 用户ID
     private String uid;
-    // 出勤率（rate of attendance）
+    // 出勤率
+    private Double attendance;
+    // （rate of attendance）计算为百分比，保留两位小数
     private String roa;
+
 
     /**
      * 空构造
      */
-    public UserLongitude() {
+    public UserItudeDO() {
 
     }
 
@@ -32,12 +35,12 @@ public class UserLongitude {
      * @param latitude 纬度
      * @param longitude 经度
      * @param uid 用户ID
-     * @param roa 出勤率（rate of attendance）
+     * @param attendance 出勤率
      */
-    public UserLongitude(String latitude, String longitude, String uid, String roa) {
+    public UserItudeDO(Double latitude, Double longitude, String uid, Double attendance) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.uid = uid;
-        this.roa = roa;
+        this.attendance = attendance;
     }
 }

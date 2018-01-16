@@ -4,7 +4,12 @@
 <!-- 配置全局常量，数据库表名，如果发生变化，只需要在这里面修改就行了，在mapper.xml文件中，直接引用${} -->
 <configuration>
     <properties>
-        <!-- 用户表 -->
+        <!-- 1. 用户表 -->
         <property name="table_user" value="to_horizon_user"/>
+        <!-- 2. 用户实时经纬度 -->
+        <property name="table_user_itude" value="sa_user_logitude_and_latitude"/>
+        <!-- 3. 用户历史经纬度表 -->
+        <property name="table_user_itude_history" value="user_position_log"/>
+
     </properties>
 </configuration>

@@ -15,9 +15,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 	<!-- 批量别名 -->
 	<typeAliases>
-		<package name="com.henghao.entity"/>
-		<package name="com.henghao.common.vo"/>
-		<package name="mappers"/>
+		<package name="com.henghao.common"/>
 	</typeAliases>
 
 </configuration>

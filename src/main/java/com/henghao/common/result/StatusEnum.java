@@ -30,6 +30,7 @@ public enum StatusEnum {
     NO_URL(404, "URL地址错误"),
 
     SUCCESS(0, "成功"),
+    SUCCESS_UPLOAD(0, "上传成功"),
     SUCCESS_ADD(0,"添加成功"),
     SUCCESS_DEL(0,"删除成功"),
     SUCCESS_SELECT(0,"查询成功"),

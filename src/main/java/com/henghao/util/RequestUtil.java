@@ -15,14 +15,9 @@ public class RequestUtil {
      */
     public synchronized static boolean ajaxRequest(HttpServletRequest request){
 
-//        try {
-//            InputStream  is = request.getInputStream ();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         String header = request.getHeader("X-Requested-With");
-        System.out.println(header+"----------");
         if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+//            System.out.println("此次请求是ajax请求。---------我在RequestUtil.java中，第25行");
             return true;
         }
         return false;

@@ -107,6 +107,32 @@ public class DateUtil {
     }
 
     /**
+     * 获取指定日期指定格式的后几天
+     * @param specifiedDay 指定的日期
+     * @param format 指定格式
+     * @param days 后几天
+     * @return String
+     */
+    public static String getDayAfter(String specifiedDay, String format, int days) {
+        Calendar c = Calendar.getInstance();
+        Date date;
+        try {
+            date = new SimpleDateFormat(format).parse(specifiedDay);
+        } catch (ParseException e) {
+            // 传入specifiedDay有误
+            return null;
+        }
+        c.setTime(date);
+        int day = c.get(Calendar.DATE);
+        // 重新设置日期
+        c.set(Calendar.DATE, day + days);
+        // 将日期转为字符串返回
+        String dayAfter = new SimpleDateFormat(format)
+                .format(c.getTime());
+        return dayAfter;
+    }
+
+    /**
      * 字符串的日期格式的计算
      */
     public static int daysBetween(String smdate, String bdate) throws ParseException {
@@ -123,6 +149,21 @@ public class DateUtil {
 //            e.printStackTrace();
 //            return 0;
 //        }
+    }
+
+
+    /**
+     * 获取指定年月中，那个月一共有多少天
+     * @param year 指定日期 - 年
+     * @param month 指定日期 - 月
+     * @return int
+     */
+    public static int getDaysForMonth(int year,int month) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);
+        int maxDate = cal.getActualMaximum(Calendar.DATE);
+        return maxDate;
     }
 
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script src="../js/jquery.min.js" ></script>
+</head>
+<body>
+
+
+<script>
+    $.ajax({
+        url:"../user/APPpassword",
+        data:{uid:"HZ9080955acfcfff015acfea808e045d",
+            originalPassword:"123456",
+            newPassword:"456456",
+            confirmPassword:"456456"
+        },
+        dataType:"json",
+        type:"post",
+        success:function (res) {
+            console.log(res);
+        },
+        error:function (res) {
+            console.log("error:"+res);
+        }
+
+    });
+</script>
+</body>
+</html>

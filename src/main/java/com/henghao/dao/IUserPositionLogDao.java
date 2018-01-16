@@ -1,6 +1,6 @@
 package com.henghao.dao;
 
-import com.henghao.common.domain.entity.UserPositionLog;
+import com.henghao.common.domain.entity.UserHistoryItudeDO;
 import com.henghao.common.domain.example.UserPositionLogExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
@@ -12,19 +12,19 @@ public interface IUserPositionLogDao {
 
     int deleteByPrimaryKey(String id);
 
-    int insert(UserPositionLog record);
+    int insert(UserHistoryItudeDO record);
 
-    int insertSelective(UserPositionLog record);
+    int insertSelective(UserHistoryItudeDO record);
 
-    List<UserPositionLog> selectByExample(UserPositionLogExample example);
+    List<UserHistoryItudeDO> selectByExample(UserPositionLogExample example);
 
-    UserPositionLog selectByPrimaryKey(String id);
+    UserHistoryItudeDO selectByPrimaryKey(String id);
 
-    int updateByExampleSelective(@Param("record") UserPositionLog record, @Param("example") UserPositionLogExample example);
+    int updateByExampleSelective(@Param("record") UserHistoryItudeDO record, @Param("example") UserPositionLogExample example);
 
-    int updateByExample(@Param("record") UserPositionLog record, @Param("example") UserPositionLogExample example);
+    int updateByExample(@Param("record") UserHistoryItudeDO record, @Param("example") UserPositionLogExample example);
 
-    int updateByPrimaryKeySelective(UserPositionLog record);
+    int updateByPrimaryKeySelective(UserHistoryItudeDO record);
 
-    int updateByPrimaryKey(UserPositionLog record);
+    int updateByPrimaryKey(UserHistoryItudeDO record);
 }

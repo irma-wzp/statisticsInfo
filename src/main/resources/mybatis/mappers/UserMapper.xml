@@ -1066,6 +1066,70 @@
 
   <!-- 自己编写 Start -->
 
+  <!-- UserItudeDO 用户实时经纬度 Start -->
+  <!-- resultMap -->
+  <resultMap id="userItudeResultMap" type="com.henghao.common.domain.entity.UserItudeDO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="latitude" property="latitude" jdbcType="DOUBLE" />
+    <result column="longitude" property="longitude" jdbcType="DOUBLE" />
+    <result column="uid" property="uid" jdbcType="VARCHAR" />
+    <result column="roa" property="roa" jdbcType="VARCHAR" />
+    <result column="attendance" property="attendance" jdbcType="DOUBLE" />
+  </resultMap>
+
+  <!-- sql 片段 -->
+  <sql id="User_Itude_Base_Column_List" >
+    id, latitude, longitude, uid, roa, attendance
+  </sql>
+  <!-- UserItudeDO 用户实时经纬度 End -->
+
+  <!-- 用户修改密码 Start -->
+  <update id="updatePassword" parameterType="com.henghao.common.dto.UserPasswordDTO">
+    UPDATE ${table_user} SET PASSWORD=#{newPassword} WHERE `ID`=#{uid}
+  </update>
+  <!-- 用户修改密码 End -->
+
+  <!-- 保存用户历史经纬度 Start -->
+  <insert id="saveUserHistoryItude" parameterType="com.henghao.common.domain.entity.UserHistoryItudeDO">
+    INSERT INTO ${table_user_itude_history} (id, address, ctime,
+      latitude, longitude, `name`,
+      uid)
+    VALUES (#{id,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{ctime,jdbcType=TIMESTAMP},
+      #{latitude,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE}, #{name,jdbcType=VARCHAR},
+      #{uid,jdbcType=VARCHAR})
+  </insert>
+  <!-- 保存用户历史经纬度 End -->
+
+  <!-- 保存用户实时经纬度 Start -->
+  <insert id="saveUserItudeDO"  parameterType="com.henghao.common.domain.entity.UserItudeDO" >
+    insert into ${table_user_itude} (id, latitude, longitude,
+      uid, roa)
+    values (#{id,jdbcType=VARCHAR}, #{latitude,jdbcType=DOUBLE}, #{longitude,jdbcType=DOUBLE},
+      #{uid,jdbcType=VARCHAR}, #{roa,jdbcType=VARCHAR})
+  </insert>
+  <!-- 保存用户实时经纬度 End -->
+
+  <!-- 更新用户实时经纬度 Start -->
+  <update id="updateUserItudeByPrimaryKey" parameterType="com.henghao.common.domain.entity.UserItudeDO">
+    UPDATE ${table_user_itude}
+    SET latitude = #{latitude,jdbcType=DOUBLE},
+      longitude = #{longitude,jdbcType=DOUBLE},
+      roa = #{roa,jdbcType=VARCHAR},
+      attendance = #{attendance,jdbcType=DOUBLE}
+    WHERE id = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 更新用户实时经纬度 End -->
+
+
+  <!-- 根据用户ID，获取用户实时经纬度 Start -->
+  <select id="getItudeByUid" resultMap="userItudeResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="User_Itude_Base_Column_List" />
+    from ${table_user_itude}
+    where uid = #{uid,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据用户ID，获取用户实时经纬度 End -->
+
   <!-- 通讯录用户信息展示 SQL片段 Start -->
   <!--<sql id="appUserVo">-->
 
@@ -1120,7 +1184,7 @@
         t2：查询所有用户的ID、姓名、部门
         两表关联可查出包装类LongAndLatVo
     -->
-    SELECT st1.uid,t1.longitude,t1.latitude,t1.ROA,t2.uname,t2.dept
+    SELECT t1.uid,t1.longitude,t1.latitude,t1.ROA,t2.uname,t2.dept
      FROM sa_user_logitude_and_latitude t1,(SELECT u.ID,u.`NAME` AS uname,d.DEPT_NAME AS dept
                                             FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
                                             WHERE u.ID=t.USER_ID AND t.DEPT_ID=d.ID) t2
@@ -1128,11 +1192,6 @@
   </select>
   <!-- 查询用户历史经纬度集合 End -->
 
-  <!-- 用户修改密码 Start -->
-  <update id="updatePassword" parameterType="com.henghao.common.dto.UserPasswordDTO">
-    UPDATE ${table_user} SET PASSWORD=#{newPassword} WHERE `ID`=#{uid}
-  </update>
-  <!-- 用户修改密码 End -->
 
 
   <!-- 自己编写 End -->

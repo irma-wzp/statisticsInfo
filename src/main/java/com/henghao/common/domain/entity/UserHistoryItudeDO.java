@@ -8,10 +8,10 @@ import java.util.Date;
 /**
  * @author wzp
  * @description: mybatis逆向生成：
- * 用户经纬度+出勤率实体类
+ * 用户历史经纬度+出勤率
  * @create on 2017/12/3.
  */
-public class UserPositionLog {
+public class UserHistoryItudeDO {
     private String id;
     // 地址
     private String address;
@@ -29,14 +29,14 @@ public class UserPositionLog {
     /**
      * 空构造
      */
-    public UserPositionLog() {
+    public UserHistoryItudeDO() {
 
     }
 
     /**
      * 全构造
      */
-    public UserPositionLog(String id, String address, Date ctime, Double latitude, Double longitude, String name, String uid) {
+    public UserHistoryItudeDO(String id, String address, Date ctime, Double latitude, Double longitude, String name, String uid) {
         this.id = id;
         this.address = address;
         this.ctime = ctime;
@@ -46,15 +46,4 @@ public class UserPositionLog {
         this.uid = uid;
     }
 
-    /**
-     *  除ID外的构造
-     */
-    public UserPositionLog(String address, Date ctime, Double latitude, Double longitude, String name, String uid) {
-        this.address = address;
-        this.ctime = ctime;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.name = name;
-        this.uid = uid;
-    }
 }

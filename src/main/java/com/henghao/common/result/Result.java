@@ -1,6 +1,7 @@
 package com.henghao.common.result;
 
 import lombok.Data;
+import java.io.Serializable;
 
 @Data
 /**
@@ -8,7 +9,9 @@ import lombok.Data;
  * @description: 接口返回类
  * @create on 2017/12/3.
  */
-public class Result {
+public class Result implements Serializable{
+
+    private static final long serialVersionUID = -4035870287304824487L;
 
     private int status;     // 状态(0:正常，1:有异常)
     private String msg;     // 消息

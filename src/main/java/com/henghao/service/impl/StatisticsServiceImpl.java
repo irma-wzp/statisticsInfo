@@ -1,18 +1,17 @@
 package com.henghao.service.impl;
 
-import com.henghao.dao.IStatisticsDao;
 import com.henghao.common.result.Result;
+import com.henghao.common.vo.CarTargetVo;
+import com.henghao.dao.IStatisticsDao;
 import com.henghao.service.IStatisticsService;
 import com.henghao.util.BaiduMapUtil;
-import com.henghao.util.DateUtils;
+import com.henghao.util.DateUtil;
 import com.henghao.util.DistanceUtil;
-import com.henghao.common.vo.CarTargetVo;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.stereotype.Service;
 
 @Service("statisticsService")
 @SuppressWarnings("all")
@@ -34,7 +33,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
     public synchronized Result getAllInfo() {
         Result result = null;
-        String currentDate = DateUtils.getCurrentDate("yyyy-MM-dd HH:mm");
+        String currentDate = DateUtil.getCurrentStringDate("yyyy-MM-dd HH:mm");
         try {
             this.resultMap.put("PersonneStatistics",
                     this.statisticsDao.findPersonStatistics(currentDate));
@@ -63,8 +62,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
                 freeCar.append(map.get("空闲车辆") + ",");
                 upKeepCar.append(map.get("保养车辆") + ",");
 
-                changeDay = DateUtils.getSpecifiedDayAfter(changeDay,
-                        "yyyy-MM-dd HH:mm");
+                changeDay = DateUtil.getDayAfter(changeDay,"yyyy-MM-dd HH:mm", 1);
             }
             this.carMap.put("freeCar", freeCar.substring(0, freeCar.length() - 1));
             this.carMap.put("outCar", outCar.substring(0, outCar.length() - 1));
@@ -89,11 +87,13 @@ public class StatisticsServiceImpl implements IStatisticsService {
     public Result getCaseCount() {
         Result result = null;
 
-        String currentDate = DateUtils.getCurrentDate("yyyy-MM");
+        String currentDate = DateUtil.getCurrentStringDate("yyyy-MM");
 
         String year = currentDate.substring(0, 4);
 
-        int day = DateUtils.getCurrentMonthLastDay();
+//        int day = DateUtil.getCurrentMonthLastDay();
+
+        int day = 31;
 
         String sql_cs = "select count(*) from tw_hz_log where FLOWID='sichu(chucishenqing)' and NEXTNODEIDS='End1;' ";
 
@@ -222,7 +222,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
     private Map<String, Object> getMonth(String sql_count) {
         Map<String, Object> map_month = new HashMap();
 
-        String year = DateUtils.getCurrentDate("yyyy");
+        String year = DateUtil.getCurrentStringDate("yyyy");
         String month = "";
         for (int i = 1; i < 13; i++) {
             if (i < 10) {
@@ -242,7 +242,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
         String sql = "SELECT Title,MTTYPE,MTINITIATOR FROM aj_great_meeting WHERE MTTYPE='重大问题决策' ";
 
-        String year_now = DateUtils.getCurrentDate("yyyy");
+        String year_now = DateUtil.getCurrentStringDate("yyyy");
 
         String year_last = Integer.parseInt(year_now) - 1+"";
 
