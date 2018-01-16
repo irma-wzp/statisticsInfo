@@ -10,6 +10,10 @@
         <property name="table_user_itude" value="sa_user_logitude_and_latitude"/>
         <!-- 3. 用户历史经纬度表 -->
         <property name="table_user_itude_history" value="user_position_log"/>
+        <!-- 4. 部门表 -->
+        <property name="table_dept" value="to_horizon_dept"/>
+        <!-- 5. 用户-部门中间表 -->
+        <property name="table_user_dept" value="tor_horizon_user_dept"/>
 
     </properties>
 </configuration>

@@ -47,10 +47,9 @@ public class UserController {
 
     /**
      * 用户上传经纬度，出勤率
-     *
      * @param itudeDO {@link UserItudeDO}
+     * @update update on 2018/1/16 已解决
      * @return {@link Result}
-     * @update: update on 2017/12/4
      */
     @ResponseBody
     @RequestMapping(value = {"/LongAndLat"}, produces = {"application/json;charset=utf-8"})
@@ -60,26 +59,26 @@ public class UserController {
 
     /**
      * PC端获取历史经纬度
-     *
+     * @create on 2017/..
+     * @update update on 2017/12/4 已解决
      * @return {@link Result}
-     * @update: update on 2017/12/4
      */
     @ResponseBody
     @RequestMapping(value = {"/getItude"}, produces = {"application/json;charset=utf-8"})
-    public Result getLongitudeAndLatitude() {
+    public Result getLongitudeAndLatitude() throws Exception {
         return userService.getTitudeToPC();
     }
 
     /**
      * 查询用户代办事项数量
-     *
+     * http://localhost:8080/statisticsInfo/user/myMessages?uid=HZ9080955acfcfff015acfe9cb0f044d
      * @param uid 用户ID
      * @return {@link Result}
-     * @update: update on 2017/12/4
+     * @update update on 2017/12/4 已解决
      */
     @ResponseBody
     @RequestMapping(value = {"/myMessages"}, produces = {"application/json;charset=utf-8"})
-    public Result myMessages(String uid) {
+    public Result myMessages(String uid) throws Exception {
         return userService.getMessages(uid);
     }
 

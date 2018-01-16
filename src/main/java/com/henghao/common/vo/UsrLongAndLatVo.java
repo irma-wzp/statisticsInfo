@@ -15,7 +15,7 @@ public class UsrLongAndLatVo {
     private String dept;        // 用户所属部门
     private String longitude;   // 经度
     private String latitude;    // 纬度
-    private String ROA;         // 出勤率（rate of attendance）
+    private String roa;         // 出勤率（rate of attendance）
 
 
     /**

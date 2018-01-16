@@ -139,7 +139,6 @@
 
     <!-- project default level -->
     <logger name="com.henghao.dao" level="${db.sql.level}"/>
-    <!--<logger name="dao" level="DEBUG"/>-->
 
     <root level="info">
         <!-- 控制台输出 -->

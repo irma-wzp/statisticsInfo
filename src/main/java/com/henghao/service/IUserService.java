@@ -12,35 +12,43 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IUserService {
 
     /**
-     * APP端 - 用户修改密码
-     * @update: update on 2017/12/4
-     * @param up 用户密码包装类
-     * @return Status
+     *  APP端 - 用户修改密码
+     * @author wzp
+     * @create 2017/7/16
+     * @update by wzp on 2018/1/15
+     * @param userPasswordDTO {@link UserPasswordDTO}
+     * @return {@link Status}
+     * @throws Exception e
      */
-    Status updatePassword(UserPasswordDTO up) throws Exception;
+    Status updatePassword(UserPasswordDTO userPasswordDTO) throws Exception;
 
     /**
      * 用户上传经纬度，出勤率
-     * @update: update on 2017/12/4
+     * @update update on 2017/12/4
      * @param itudeDO {@link UserItudeDO}
      * @return {@link Result}
      */
     Status addUserItude(UserItudeDO itudeDO) throws Exception;
     
     /**
-     * PC端获取历史经纬度
-     * @update: update on 2017/12/4
+     *  PC端获取历史经纬度
+     * @author wzp
+     * @create on 2017
+     * @update on 2017/12/4
      * @return {@link Result}
      */
-    Result getTitudeToPC();
+    Result getTitudeToPC() throws Exception;
 
     /**
-     * 查询用户代办事项数量
-     * @update: update on 2017/12/4
-     * @param uid 用户ID
+     *  查询用户代办事项数量
+     * @author wzp
+     * @create on 2017/..
+     * @update on 2017/12/4
      * @return {@link Result}
+     * @param uid 用户ID
+     * @throws Exception e
      */
-    Result getMessages(String uid);
+    Result getMessages(String uid)throws Exception;
 
     /**
      * APP端 - 获取通讯录列表，所有用户集合

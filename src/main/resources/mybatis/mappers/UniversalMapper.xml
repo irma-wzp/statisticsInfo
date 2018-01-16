@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.henghao.dao.IUniversalDao" >
+
+
+    <!-- getString Start -->
+    <select id="getString" parameterType="com.henghao.common.dto.SelectDTO" resultType="java.lang.String">
+        ${sql}
+    </select>
+    <!-- getString End -->
+
+    <!-- getCount Start -->
+    <select id="getCount" parameterType="com.henghao.common.dto.SelectDTO" resultType="java.lang.Integer">
+        ${sql}
+    </select>
+    <!-- getCount End -->
+
+</mapper>

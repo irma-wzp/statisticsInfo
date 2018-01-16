@@ -3,9 +3,9 @@ package com.henghao.common.dto;
 import lombok.Data;
 
 /**
- * DTO（Data Transfer Object） ：数据传输对象， Service 或 Manager 向外传输的对象。
+ * APP端用户修改密码的包装类
  * @author wzp
- * @description 数据传输对象 - APP端用户修改密码的包装类
+ * @description DTO（Data Transfer Object） ：数据传输对象， Service 或 Manager 向外传输的对象。
  * @create on 2018/1/12.
  */
 @Data

@@ -5,7 +5,6 @@ import com.henghao.common.domain.entity.UserHistoryItudeDO;
 import com.henghao.common.domain.entity.UserItudeDO;
 import com.henghao.common.domain.example.UserExample;
 import com.henghao.common.dto.UserPasswordDTO;
-import com.henghao.common.result.Result;
 import com.henghao.common.vo.LoginVo;
 import com.henghao.common.vo.UserUpdateVo;
 import com.henghao.common.vo.UserVo;
@@ -84,7 +83,17 @@ public interface IUserDao {
      * @param uid
      * @return
      */
-    UserItudeDO getItudeByUid(String uid);
+    UserItudeDO getItudeByUid(String uid) throws Exception;
+
+    /**
+     * 查询用户历史经纬度集合
+     *
+     * @author wzp
+     * @create on 2017
+     * @update on 2017/12/4
+     * @return {@link List<UsrLongAndLatVo>}
+     */
+    List<UsrLongAndLatVo> selectUserTitudesDao()throws Exception;
 
     /**
      * 查询通讯录列表
@@ -119,17 +128,6 @@ public interface IUserDao {
      * @param file_ture_name 文件名
      */
     void addImageInfo(String uid, String file_ture_name);
-
-    /**
-     * 查询用户历史经纬度集合
-     *
-     * @return {@link Result}
-     * @update: update on 2017/12/4
-     */
-    List<UsrLongAndLatVo> selectUserTitudesDao();
-
-
-
 
 
     /*

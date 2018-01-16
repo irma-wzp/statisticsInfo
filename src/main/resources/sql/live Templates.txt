@@ -1,0 +1,22 @@
++ 接口上添加信息
+ 
+* @author wzp
+* @create on $date$
+* @update 
+* @return {@link $resName$}
+
+date date()
+resName	methodReturnType()
+
+
+- 接口实现类少量描述信息
+/**
+ *
+ * @see $see$#
+ * @create by wzp on $date$ $time$
+ * @update
+ */
+
+see classNameComplete()
+date date()
+time time()

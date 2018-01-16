@@ -1,16 +1,20 @@
 package com.henghao.service.impl;
 
 import com.henghao.common.domain.entity.UserDO;
-import com.henghao.common.domain.entity.UserItudeDO;
 import com.henghao.common.domain.entity.UserHistoryItudeDO;
+import com.henghao.common.domain.entity.UserItudeDO;
+import com.henghao.common.domain.example.UserExample;
+import com.henghao.common.dto.SelectDTO;
 import com.henghao.common.dto.UserPasswordDTO;
 import com.henghao.common.result.Result;
 import com.henghao.common.result.Status;
 import com.henghao.common.result.StatusEnum;
 import com.henghao.common.vo.LoginVo;
+import com.henghao.common.vo.MyMessageVO;
 import com.henghao.common.vo.UserUpdateVo;
 import com.henghao.common.vo.UserVo;
 import com.henghao.common.vo.UsrLongAndLatVo;
+import com.henghao.dao.IUniversalDao;
 import com.henghao.dao.IUserDao;
 import com.henghao.service.IUserService;
 import com.henghao.util.DateUtil;
@@ -22,11 +26,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.text.DecimalFormat;
 
 
 /**
@@ -40,29 +44,30 @@ public class UserServiceImpl implements IUserService {
     // mapper接口
     @Resource
     private IUserDao userDao;
+    @Resource
+    private IUniversalDao universalDao;
 
     // service层map
     Map<String, Object> map_service_messages = new HashMap();
 
 
     /**
-     * APP端 - 用户修改密码
-     * @update on 2017/12/4
-     * @param upDTO 用户密码包装类
-     * @return Status
+     * @see IUserService#updatePassword(UserPasswordDTO)
+     * @create by wzp on 2018/1/16 12:11
+     * @update  
      */
-    public Status updatePassword(UserPasswordDTO upDTO)  throws Exception {
+    public Status updatePassword(UserPasswordDTO userPasswordDTO)  throws Exception {
 
         // 非空验证
-        if (ObjectUtil.propertyIsNull(upDTO))
+        if (ObjectUtil.propertyIsNull(userPasswordDTO))
             return new Status(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN());
 
-        String originalPassword = upDTO.getOriginalPassword();
-        String newPassword = upDTO.getNewPassword();
-        String uid = upDTO.getUid();
+        String originalPassword = userPasswordDTO.getOriginalPassword();
+        String newPassword = userPasswordDTO.getNewPassword();
+        String uid = userPasswordDTO.getUid();
 
         // 密码与重复密码是否正确
-        if (!newPassword.equals(upDTO.getConfirmPassword()))
+        if (!newPassword.equals(userPasswordDTO.getConfirmPassword()))
             return new Status(StatusEnum.ERROR_PRAM.getCODE(), "新密码与确认密码不一致");
 
         // 查询用户ID是否存在
@@ -78,13 +83,14 @@ public class UserServiceImpl implements IUserService {
             return new Status(StatusEnum.ERROR_PRAM.getCODE(), "原密码错误");
 
         // 修改密码
-        upDTO.setNewPassword(newPwd);
-        userDao.updatePassword(upDTO);
+        userPasswordDTO.setNewPassword(newPwd);
+        userDao.updatePassword(userPasswordDTO);
         return new Status(StatusEnum.SUCCESS_UPDATE.getCODE(), StatusEnum.SUCCESS_UPDATE.getEXPLAIN());
     }
 
     /**
      * 用户上传经纬度，出勤率
+     * @see com.henghao.service.IUserService#addUserItude(UserItudeDO itudeDO) throws Exception
      * @update update on 2017/12/4
      * @param itudeDO {@link UserItudeDO}
      * @return {@link Result}
@@ -124,17 +130,114 @@ public class UserServiceImpl implements IUserService {
         UserHistoryItudeDO historyItude = new UserHistoryItudeDO(uuid,null,currentDate,latitude,longitude,userDO.getName(),userDO.getId());
         userDao.saveUserHistoryItude(historyItude);
 
+        // 保存到实时经纬度信息表中
         UserItudeDO userItudeDO = userDao.getItudeByUid(uid);
         if (userItudeDO == null) {
+            // 不存在，添加
             String itudeId = UUidUtil.getGSUUid32();
             itudeDO.setId(itudeId);
             userDao.saveUserItudeDO(itudeDO);
         }else{
+            // 已存在，修改
             itudeDO.setId(userItudeDO.getId());
             userDao.updateUserItudeByPrimaryKey(itudeDO);
         }
         return new Status(StatusEnum.SUCCESS_UPLOAD.getCODE(),StatusEnum.SUCCESS_UPLOAD.getEXPLAIN());
     }
+
+    /**
+     * PC端获取用户实时经纬度及相关信息
+     * @see com.henghao.service.IUserService#getTitudeToPC()
+     * @create by wzp on 2017
+     * @update on 2018/1/16
+     */
+    public Result getTitudeToPC() throws Exception {
+        List<UsrLongAndLatVo> list = userDao.selectUserTitudesDao();
+        return new Result(StatusEnum.SUCCESS_SELECT.getCODE(), StatusEnum.SUCCESS_SELECT.getEXPLAIN(), list);
+    }
+
+    /**
+     * 查询用户代办事项数量
+     * @see IUserService#getMessages(String)
+     * @param uid 用户ID
+     * @create by wzp on 2017/..
+     * @update on 2017/12/4
+     */
+    public Result getMessages(String uid) throws Exception {
+
+        if (uid == null || "".equals(uid) ) {
+            return new Result(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN(), null);
+        }
+
+        UserExample example = new UserExample();
+        example.or().andIdEqualTo(uid);
+        int count = userDao.countByExample(example);
+        if (count != 1)
+            return new Result(StatusEnum.ERROR_PRAM.getCODE(),StatusEnum.ERROR_PRAM.getEXPLAIN(),null);
+
+        String sql = "SELECT DEPT_ID FROM tor_horizon_user_dept WHERE USER_ID='"+uid+"'";
+        String deptid = universalDao.getString(new SelectDTO(sql));
+
+
+        String sql_base = "SELECT COUNT(*) FROM TW_HZ_WORKLIST ";
+
+        String where_id = " WHERE (AUTH_ID='" + uid + "' OR AGENT_ID='" + uid + "') ";
+
+        String sql_end = " ORDER BY SENDTIME DESC";
+
+        String sql_db = sql_base + where_id + "AND ISACTIVE = '1' AND STATUS_NO < '200'" + sql_end;
+
+        String sql_ky = sql_base +
+                " WHERE (AUTH_ID='" +
+                uid +
+                "' OR (AUTH_ID='-null-' AND SUBJECTION_ID IN(SELECT u.ID FROM to_horizon_user u))) " +
+                "AND STATUS='CReader'" + sql_end;
+
+        String sql_yb = sql_base + where_id + "AND STATUS_NO > 200 AND STATUS_NO < 300 " + sql_end;
+
+        String sql_fq = "SELECT COUNT(*) FROM TW_HZ_INSTANCE WHERE CREATOR in ('U_" + uid + "','" + uid + "') ORDER BY STARTTIME DESC ";
+
+        String sql_yy = sql_base + "WHERE AUTH_ID='" + uid + "' AND STATUS='Readed' " + sql_end;
+
+        String sql_rl = "SELECT COUNT(*) FROM TW_HZ_WORKLIST  WHERE ISCLAIM='1' AND ISACTIVE='1' AND AUTH_ID='-null-' AND SUBJECTION_ID='" + deptid + "'";
+
+        String sql_dy = sql_base +
+                "WHERE STATUS='Reader' AND ISACTIVE='1' " +
+                "AND (AUTH_ID = '" +
+                uid +
+                "' OR (AUTH_ID = '-null-' AND SUBJECTION_ID IN (SELECT u.ID FROM to_horizon_user u) AND SUBJECTION_TYPE <> 'S') " +
+                "OR (AUTH_ID = '-null-' AND SUBJECTION_ID ='" +
+                deptid +
+                "' AND SUBJECTION_TYPE = 'S')) " +
+                "AND WORKID NOT IN (SELECT WORKID FROM TW_HZ_WorkList WHERE STATUS = 'Readed' AND AUTH_ID = '" +
+                uid + "') " + sql_end;
+
+        String sql_cb = "SELECT COUNT(*) FROM TW_HZ_INSTANCE C,TW_HZ_TRACK D WHERE D.WORKID = C.ID AND C.CREATOR like '%" +
+                uid +
+                "' AND D.FLOWSTATUS = '150' " +
+                "ORDER BY C.STARTTIME DESC";
+
+        MyMessageVO myMessageVO = new MyMessageVO();
+        // 个人代办
+        myMessageVO.setGerendaiban_count(universalDao.getCount(new SelectDTO(sql_db)));
+        // 可阅事宜
+        myMessageVO.setKeyueshiyi_count(universalDao.getCount(new SelectDTO(sql_ky)));
+        // 已办事宜
+        myMessageVO.setYibanshiyi_count(universalDao.getCount(new SelectDTO(sql_yb)));
+        // 发起事宜
+        myMessageVO.setFaqishiyi_count(universalDao.getCount(new SelectDTO(sql_fq)));
+        // 已阅事宜
+        myMessageVO.setYiyueshiyi_count(universalDao.getCount(new SelectDTO(sql_yy)));
+        // 代办认领
+        myMessageVO.setDaibanrenling_count(universalDao.getCount(new SelectDTO(sql_rl)));
+        // 待阅事宜
+        myMessageVO.setDaiyueshiyi_count(universalDao.getCount(new SelectDTO(sql_dy)));
+        // 撤办文件
+        myMessageVO.setChebanwenjian_count(universalDao.getCount(new SelectDTO(sql_cb)));
+
+        return new Result(StatusEnum.SUCCESS_SELECT.getCODE(),StatusEnum.SUCCESS_SELECT.getEXPLAIN(),myMessageVO);
+    }
+
 
     /**
      * APP端 - 获取通讯录列表，所有用户集合
@@ -297,107 +400,6 @@ public class UserServiceImpl implements IUserService {
         return result;
     }
 
-    /**
-     * 查询用户代办事项数量
-     * @update: update on 2017/12/4
-     * @param uid 用户ID
-     * @return {@link Result}
-     */
-    public Result getMessages(String uid) {
-        Result result = null;
-        /*
-        if ((uid == null) || ("".equals(uid)) || (userDao.findPersonal(uid) == null)) {
-            result = new Result(1, "用户ID传入错误", null);
-            return result;
-        }
-        map_service_messages.clear();
-
-        String deptid = null;
-        try {
-            deptid = userDao.getString("SELECT d.ID FROM to_horizon_dept d,to_horizon_user u,tor_horizon_user_dept ud WHERE u.ID=ud.USER_ID AND d.ID=ud.DEPT_ID AND u.ID='" +
-
-                    uid + "'");
-            deptid = deptid.substring(1, deptid.length() - 1);
-        } catch (Exception localException1) {
-        }
-        String sql_base = "SELECT COUNT(*) FROM TW_HZ_WORKLIST ";
-
-        String where_id = " WHERE (AUTH_ID='" + uid + "' OR AGENT_ID='" + uid + "') ";
-
-        String sql_end = " ORDER BY SENDTIME DESC";
-
-        String sql_db = sql_base + where_id + "AND ISACTIVE = '1' AND STATUS_NO < '200'" + sql_end;
-
-        String sql_ky = sql_base +
-                " WHERE (AUTH_ID='" +
-                uid +
-                "' OR (AUTH_ID='-null-' AND SUBJECTION_ID IN(SELECT u.ID FROM to_horizon_user u))) " +
-                "AND STATUS='CReader'" + sql_end;
-
-        String sql_yb = sql_base + where_id + "AND STATUS_NO > 200 AND STATUS_NO < 300 " + sql_end;
-
-        String sql_fq = "SELECT COUNT(*) FROM TW_HZ_INSTANCE WHERE CREATOR in ('U_" + uid + "','" + uid + "') ORDER BY STARTTIME DESC ";
-
-        String sql_yy = sql_base + "WHERE AUTH_ID='" + uid + "' AND STATUS='Readed' " + sql_end;
-
-        String sql_rl = "SELECT COUNT(*) FROM TW_HZ_WORKLIST  WHERE ISCLAIM='1' AND ISACTIVE='1' AND AUTH_ID='-null-' AND SUBJECTION_ID='" + deptid + "'";
-
-        String sql_dy = sql_base +
-                "WHERE STATUS='Reader' AND ISACTIVE='1' " +
-                "AND (AUTH_ID = '" +
-                uid +
-                "' OR (AUTH_ID = '-null-' AND SUBJECTION_ID IN (SELECT u.ID FROM to_horizon_user u) AND SUBJECTION_TYPE <> 'S') " +
-                "OR (AUTH_ID = '-null-' AND SUBJECTION_ID ='" +
-                deptid +
-                "' AND SUBJECTION_TYPE = 'S')) " +
-                "AND WORKID NOT IN (SELECT WORKID FROM TW_HZ_WorkList WHERE STATUS = 'Readed' AND AUTH_ID = '" +
-                uid + "') " + sql_end;
-
-        String sql_cb = "SELECT COUNT(*) FROM TW_HZ_INSTANCE C,TW_HZ_TRACK D WHERE D.WORKID = C.ID AND C.CREATOR like '%" +
-                uid +
-                "' AND D.FLOWSTATUS = '150' " +
-                "ORDER BY C.STARTTIME DESC";
-        try {
-            map_service_messages.put("gerendaiban_count", Integer.valueOf(userDao.getCount(sql_db)));
-
-            map_service_messages.put("keyueshiyi_count", Integer.valueOf(userDao.getCount(sql_ky)));
-
-            map_service_messages.put("yibanshiyi_count", Integer.valueOf(userDao.getCount(sql_yb)));
-
-            map_service_messages.put("faqishiyi_count", Integer.valueOf(userDao.getCount(sql_fq)));
-
-            map_service_messages.put("yiyueshiyi_count", Integer.valueOf(userDao.getCount(sql_yy)));
-
-            map_service_messages.put("daibanrenling_count", Integer.valueOf(userDao.getCount(sql_rl)));
-
-            map_service_messages.put("daiyueshiyi_count", Integer.valueOf(userDao.getCount(sql_dy)));
-
-            map_service_messages.put("chebanwenjian_count", Integer.valueOf(userDao.getCount(sql_cb)));
-        } catch (Exception e) {
-            return new Result(1, "系统繁忙", null);
-        }
-        result = new Result(0, "推送消息查询成功", map_service_messages);
-        */
-        return result;
-    }
-
-
-    /** PC端获取用户实时经纬度及相关信息
-	 * @see com.henghao.service.IUserService#getTitudeToPC()
-	 */
-    public Result getTitudeToPC() {
-
-        Result result;
-
-        try {
-            List<UsrLongAndLatVo> list = userDao.selectUserTitudesDao();
-            result = new Result(StatusEnum.SUCCESS_SELECT.getCODE(), StatusEnum.SUCCESS_SELECT.getEXPLAIN(), list);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = new Result(StatusEnum.ERROR_SERVER.getCODE(), StatusEnum.ERROR_SERVER.getEXPLAIN(), null);
-        }
-        return result;
-    }
 
     public Result updatePersonal(UserDO userDO) {
         Result result = null;/*

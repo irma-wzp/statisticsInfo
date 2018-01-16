@@ -23,13 +23,13 @@
         <property name="driverClassName" value="${db.driverClassName}" />
         <!-- 初始化连接大小 -->
         <property name="initialSize" value="${db.initialSize}" />
-        <!-- 连接池最大数量 -->
+        <!-- 连接池的最大数据库连接数。设为0表示无限制。一般把maxActive设置成可能的并发量就行了 -->
         <property name="maxActive" value="${db.maxActive}" />
-        <!-- 连接池最大空闲 -->
+        <!-- 最大等待(空闲)连接中的数量,设 0 为没有限制 -->
         <property name="maxIdle" value="${db.maxIdle}" />
-        <!-- 连接池最小空闲 -->
+        <!-- 最小等待(空闲)连接中的数量 -->
         <property name="minIdle" value="${db.minIdle}" />
-        <!-- 获取连接最大等待时间 -->
+        <!-- 最大等待毫秒数, 单位为 ms, 如果超过此时间将接到异常,设为-1表示无限制 -->
         <property name="maxWait" value="${db.maxWait}" />
 
         <!-- 打开removeAbandoned功能 -->
@@ -42,7 +42,7 @@
         <!-- Oracle select 1 from dual
             db2 select 1 from sysibm.sysdummy1
             mysql select 1 -->
-        <property name="validationQuery" value="SELECT 1 "/>
+        <property name="validationQuery" value="SELECT 'x' "/>
         <property name="testWhileIdle" value="true"/>
         <property name="testOnBorrow" value="false" />
         <property name="testOnReturn" value="false" />
@@ -69,13 +69,7 @@
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.henghao.dao"/>
-        <!--<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />-->
     </bean>
-
-    <!-- 创建一个sqlSession实例，线程安全的，可以在所有DAO实例共享，原理是将sqlSession，事务与当前线程挂钩 -->
-    <!--<bean name="sqlSessionTemplateASS" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">-->
-        <!--<constructor-arg index="0" ref="sqlSessionFactory" />-->
-    <!--</bean>-->
 
     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -99,8 +93,6 @@
         <aop:pointcut id="txPointcut" expression="execution(* com.henghao.service.*.*(..))" />
         <!-- 通知点 -->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
-
-         <!--Advisor定义，切入点和通知分别为txPointcout、txAdvice-->
     </aop:config>
 
 </beans>

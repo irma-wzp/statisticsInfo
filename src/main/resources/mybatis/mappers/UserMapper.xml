@@ -1130,6 +1130,23 @@
   </select>
   <!-- 根据用户ID，获取用户实时经纬度 End -->
 
+  <!-- 查询用户历史经纬度集合 Start -->
+  <select id="selectUserTitudesDao" resultType="com.henghao.common.vo.UsrLongAndLatVo">
+    <!--
+        t1:查询所有用户最新时间的经纬度及用户ID
+        t2：查询所有用户的ID、姓名、部门
+        两表关联可查出包装类LongAndLatVo
+    -->
+    SELECT t1.uid,t1.longitude,t1.latitude,t1.roa,t2.uname,t2.dept
+    FROM ${table_user_itude} t1,(SELECT u.ID,u.`NAME` AS uname,d.DEPT_NAME AS dept
+    FROM ${table_user} u,${table_dept} d,${table_user_dept} t
+    WHERE u.ID=t.USER_ID AND t.DEPT_ID=d.ID) t2
+    WHERE t1.uid=t2.ID
+  </select>
+  <!-- 查询用户历史经纬度集合 End -->
+
+
+
   <!-- 通讯录用户信息展示 SQL片段 Start -->
   <!--<sql id="appUserVo">-->
 
@@ -1139,7 +1156,7 @@
   <!-- 查询通讯录列表 Start -->
   <select id="findAllUserToApp" resultType="com.henghao.common.vo.UserVo">
     SELECT u.ID,u.BIRTH_DATE,u.`NAME`,u.TELEPHONE,u.CELLPHONE,u.POSITION,u.SEX,u.ADDRESS,u.WORK_DESC,u.EMP_NUM,d.DEPT_NAME
-    FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
+    FROM ${table_user} u,${table_dept} d,${table_user_dept} t
     WHERE u.ID=t.USER_ID
     AND t.DEPT_ID=d.ID
     AND d.DEPT_CODE &lt;&gt; '100000'
@@ -1154,7 +1171,7 @@
       <bind name="userId" value="#{uid}" />
 
     SELECT u.ID,u.BIRTH_DATE,u.`NAME`,u.TELEPHONE,u.CELLPHONE,u.POSITION,u.SEX,u.ADDRESS,u.WORK_DESC,u.EMP_NUM,d.DEPT_NAME
-    FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
+    FROM ${table_user} u,${table_dept} d,${table_user_dept} t
     WHERE u.ID=t.USER_ID
     AND t.DEPT_ID=d.ID
     AND d.DEPT_NAME &lt;&gt; '部门导航'
@@ -1174,25 +1191,8 @@
   <update id="updateUserDept" parameterType="com.henghao.common.vo.UserUpdateVo" >
     <bind name="deptid" value="deptId" />
     <bind name="userid" value="id" />
-    UPDATE tor_horizon_user_dept SET DEPT_ID = deptid WHERE USER_ID = userid
+    UPDATE ${table_user_dept} SET DEPT_ID = deptid WHERE USER_ID = userid
   </update>
-
-  <!-- 查询用户历史经纬度集合 Start -->
-  <select id="selectUserTitudesDao" resultType="com.henghao.common.vo.UsrLongAndLatVo">
-    <!--
-        t1:查询所有用户最新时间的经纬度及用户ID
-        t2：查询所有用户的ID、姓名、部门
-        两表关联可查出包装类LongAndLatVo
-    -->
-    SELECT t1.uid,t1.longitude,t1.latitude,t1.ROA,t2.uname,t2.dept
-     FROM sa_user_logitude_and_latitude t1,(SELECT u.ID,u.`NAME` AS uname,d.DEPT_NAME AS dept
-                                            FROM ${table_user} u,to_horizon_dept d,tor_horizon_user_dept t
-                                            WHERE u.ID=t.USER_ID AND t.DEPT_ID=d.ID) t2
-     WHERE t1.uid=t2.ID
-  </select>
-  <!-- 查询用户历史经纬度集合 End -->
-
-
 
   <!-- 自己编写 End -->
 

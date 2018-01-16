@@ -67,7 +67,7 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
             try {
                 httpServletResponse.setContentType("application/json;charset=UTF-8");
                 writer = httpServletResponse.getWriter();
-                String json = new Gson().toJson(new Result(1,StatusEnum.ERROR_UNKNOWN.getEXPLAIN(),""));
+                String json = new Gson().toJson(new Result(StatusEnum.ERROR_UNKNOWN.getCODE(),StatusEnum.ERROR_UNKNOWN.getEXPLAIN(),""));
                 writer.write(json);
                 writer.flush();
                 writer.close();
@@ -98,7 +98,6 @@ public class GlobalExceptionHandler implements HandlerExceptionResolver {
     /**
      * 写入日志方法
      * @param detailErrMsg 详细错误信息
-     * @Description 日志异常
      * @author wzp
      * @create on 2017/12/18
      */

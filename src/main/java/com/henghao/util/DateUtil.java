@@ -133,22 +133,27 @@ public class DateUtil {
     }
 
     /**
-     * 字符串的日期格式的计算
+     * 两个日期相差多少天(end - start ) <br/>
+     * 日期格式必须是：yyyy-MM-dd 格式，否则出异常 ParseException ，<br/>
+     * 异常被内部捕获，打印异常信息，返回null
+     * @param start 开始日期
+     * @param end 结束日期
+     * @return int
      */
-    public static int daysBetween(String smdate, String bdate) throws ParseException {
+    public static Integer daysBetween(String start, String end){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
-//        try {
-            cal.setTime(sdf.parse(smdate));
+        try {
+            cal.setTime(sdf.parse(start));
             long time1 = cal.getTimeInMillis();
-            cal.setTime(sdf.parse(bdate));
+            cal.setTime(sdf.parse(end));
             long time2 = cal.getTimeInMillis();
             long between_days = (time2 - time1) / (1000 * 3600 * 24);
             return Integer.parseInt(String.valueOf(between_days));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//            return 0;
-//        }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
