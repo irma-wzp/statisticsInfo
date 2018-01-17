@@ -80,6 +80,7 @@ public class UserController {
     @RequestMapping(value = {"/myMessages"}, produces = {"application/json;charset=utf-8"})
     public Result myMessages(String uid) throws Exception {
         return userService.getMessages(uid);
+
     }
 
     /**
@@ -127,6 +128,7 @@ public class UserController {
     @RequestMapping(value = {"/updatePersonal"}, produces = {"application/json;charset=utf-8"})
     public Result updatePersonal(UserDO userDO, UserUpdateVo updateVo) {
         return userService.updatePersonal(userDO, updateVo);
+
     }
 
     /**

@@ -244,6 +244,7 @@ public class UserServiceImpl implements IUserService {
      * @return {@link Result}
      */
     public Result findAllUser() {
+
         Result result;
         try {
             List<UserVo> list = userDao.findAllUserToApp();
@@ -299,7 +300,7 @@ public class UserServiceImpl implements IUserService {
         String deptId = updateVo.getDeptId();
 
         // 非空验证
-        if (id == null || "".equals(id) || userDO == null || deptId == null || "".equals(deptId)) {
+        if (id == null || "".equals(id) || deptId == null || "".equals(deptId)) {
             return new Result(1, "必要参数传入为空", null);
         }
 
