@@ -85,8 +85,8 @@ public class UserController {
 
     /**
      * APP端 - 获取通讯录列表，所有用户集合
-     *
      * @return {@link Result}
+     * @update on 2018/2/5 已解决
      */
     @ResponseBody
     @RequestMapping(value = {"/findAllUser"}, produces = {"application/json;charset=utf-8"})
@@ -99,6 +99,7 @@ public class UserController {
      *
      * @param uid 用户ID
      * @return {@link Result}
+     * @update on 2018/2/5 已解决
      */
     @ResponseBody
     @RequestMapping(value = {"/findByUid"}, produces = {"application/json;charset=utf-8"})
@@ -111,6 +112,7 @@ public class UserController {
      *
      * @param uid uid {@code String} 用户ID
      * @return {@link Result} 结果返回类
+     * @update on 2018/2/6 已解决
      */
     @ResponseBody
     @RequestMapping(value = {"/findPersonal"}, produces = {"application/json;charset=utf-8"})
@@ -128,7 +130,6 @@ public class UserController {
     @RequestMapping(value = {"/updatePersonal"}, produces = {"application/json;charset=utf-8"})
     public Result updatePersonal(UserDO userDO, UserUpdateVo updateVo) {
         return userService.updatePersonal(userDO, updateVo);
-
     }
 
     /**
@@ -148,7 +149,7 @@ public class UserController {
      *
      * @param uid {@code String} 用户ID
      * @return {@link Result}
-     * @create:  2017年4月8日11:19:30
+     * @create  2017年4月8日11:19:30
      */
     @ResponseBody
     @RequestMapping(value = "/showUserImage", produces = "application/json;charset=utf-8")
@@ -159,19 +160,14 @@ public class UserController {
     /**
      * APP新增用户头像上传功能	2017年4月8日10:19:56
      *
-     * @param uid     {@code String} 用户ID
-     * @param file    {@code MultipartFile} 用户头像文件
+     * @param uid {@code String} 用户ID
+     * @param file {@code MultipartFile} 用户头像文件
      * @return {@link Result}
      */
     @ResponseBody
     @RequestMapping(value = "/imageUpLoad", produces = "application/json;charset=utf-8")
     public Result imageUpLoad(String uid, @RequestParam(value = "headImage", required = false) MultipartFile file) {
 
-        Result result;
-
-        result = userService.addUserImage(uid,file);
-
-        return result;
-
+        return userService.addUserImage(uid,file);
     }
 }

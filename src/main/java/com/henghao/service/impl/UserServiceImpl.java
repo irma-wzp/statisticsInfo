@@ -248,10 +248,10 @@ public class UserServiceImpl implements IUserService {
         Result result;
         try {
             List<UserVo> list = userDao.findAllUserToApp();
-            result = new Result(0, "通讯录所有用户查询成功", list);
+            result = new Result(StatusEnum.SUCCESS_SELECT.getCODE(), StatusEnum.SUCCESS_SELECT.getEXPLAIN(), list);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new Result(1, "通讯录查询失败", null);
+            result = new Result(StatusEnum.ERROR_UNKNOWN.getCODE(), StatusEnum.ERROR_UNKNOWN.getEXPLAIN(), null);
         }
         return result;
     }
@@ -262,25 +262,23 @@ public class UserServiceImpl implements IUserService {
      * @return {@link Result}
      */
     public Result findByUid(String uid) {
-        Result result;
+
         if ((uid == null) || ("".equals(uid))) {
-            result = new Result(1, "传入用户id为空", null);
-            return result;
+            return new Result(StatusEnum.ERROR_PRAM.getCODE(), StatusEnum.ERROR_PRAM.getEXPLAIN(), null);
         }
-        result = new Result(0, "查询成功", userDao.findByUidToApp(uid));
-        return result;
+        return new Result(StatusEnum.SUCCESS_SELECT.getCODE(), StatusEnum.SUCCESS_SELECT.getEXPLAIN(), userDao.findByUidToApp(uid));
     }
+
 
     public Result findPersonal(String uid) {
         Result result;
         if ((uid == null) || ("".equals(uid))) {
-            result = new Result(1, "传入用户ID为空", null);
-            return result;
+            return new Result(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN(), null);
         }
         try {
-            result = new Result(0, "个人资料查询成功", userDao.selectByPrimaryKey(uid));
+            result = new Result(StatusEnum.SUCCESS_SELECT.getCODE(), StatusEnum.SUCCESS_SELECT.getEXPLAIN(), userDao.selectByPrimaryKey(uid));
         } catch (Exception e) {
-            result = new Result(0, "系统繁忙", null);
+            result = new Result(StatusEnum.ERROR_UNKNOWN.getCODE(), StatusEnum.ERROR_UNKNOWN.getEXPLAIN(), null);
         }
         return result;
     }
@@ -301,7 +299,7 @@ public class UserServiceImpl implements IUserService {
 
         // 非空验证
         if (id == null || "".equals(id) || deptId == null || "".equals(deptId)) {
-            return new Result(1, "必要参数传入为空", null);
+            return new Result(StatusEnum.NO_PRAM.getCODE(), StatusEnum.NO_PRAM.getEXPLAIN(), null);
         }
 
         // 根据ID查询数据库
@@ -498,7 +496,5 @@ public class UserServiceImpl implements IUserService {
         }
         return new Result(1, "未知错误", null);
     }
-
-
 
 }

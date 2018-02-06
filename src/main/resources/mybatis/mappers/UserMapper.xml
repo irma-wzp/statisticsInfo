@@ -1168,14 +1168,13 @@
   <!-- APP端根据用户ID查询用户信息 Start-->
   <select id="findByUidToApp" parameterType="String" resultType="com.henghao.common.vo.UserVo">
       <!-- 定义用户ID变量，防止SQL注入 -->
-      <bind name="userId" value="#{uid}" />
 
     SELECT u.ID,u.BIRTH_DATE,u.`NAME`,u.TELEPHONE,u.CELLPHONE,u.POSITION,u.SEX,u.ADDRESS,u.WORK_DESC,u.EMP_NUM,d.DEPT_NAME
     FROM ${table_user} u,${table_dept} d,${table_user_dept} t
     WHERE u.ID=t.USER_ID
     AND t.DEPT_ID=d.ID
     AND d.DEPT_NAME &lt;&gt; '部门导航'
-    AND u.ID= userId
+    AND u.ID= #{uid}
   </select>
   <!-- APP端根据用户ID查询用户信息 End-->
 
